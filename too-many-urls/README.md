@@ -14,7 +14,7 @@ Download and unzip the too-many-urls.zip file. Place the unzipped folder in your
 ```
 #!php
 require_once( K_COUCH_DIR.'addons/too-many-urls/too_many_urls.php' );
-'''
+```
 
 ###Using the Too Many URLs Tag###
 
@@ -31,7 +31,7 @@ For example:
            ...Not spam. Process form...
         </cms:if>
     </cms:if>
- '''   
+ ```   
 If the 'allowed' parameter is not specified, the default is '1'.
 
 More information about using add-ons with Couch is available on the Couch forum.
