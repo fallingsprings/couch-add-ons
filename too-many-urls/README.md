@@ -23,7 +23,6 @@ This tag is meant to be used in a form's k_success routine. It tests how many ur
 For example:
 
 ```
-#!php
     <cms:if k_success >
         <cms:if "<cms:too_many_urls in='frm_message' allowed='1' />" >
             <p class="error_msg">Sorry. There are too many URLs in your message. If you need to send us a link, please contact us first.</p>
