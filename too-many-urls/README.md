@@ -11,7 +11,10 @@ Since most spammers seem to prefer sending multiple URLs, I've found that allowi
 
 Download and unzip the too-many-urls.zip file. Place the unzipped folder in your couch/addons/ folder. Register the add-on by adding a line of code to couch/addons/kfunctions.php. 
 
+```
+#!php
 require_once( K_COUCH_DIR.'addons/too-many-urls/too_many_urls.php' );
+'''
 
 ###Using the Too Many URLs Tag###
 
@@ -19,6 +22,8 @@ This tag is meant to be used in a form's k_success routine. It tests how many ur
 
 For example:
 
+```
+#!php
     <cms:if k_success >
         <cms:if "<cms:too_many_urls in='frm_message' allowed='1' />" >
             <p class="error_msg">Sorry. There are too many URLs in your message. If you need to send us a link, please contact us first.</p>
@@ -26,7 +31,7 @@ For example:
            ...Not spam. Process form...
         </cms:if>
     </cms:if>
-    
+ '''   
 If the 'allowed' parameter is not specified, the default is '1'.
 
 More information about using add-ons with Couch is available on the Couch forum.
