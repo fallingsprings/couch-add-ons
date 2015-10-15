@@ -1,5 +1,5 @@
 # Too Many URLs Tag #
-##Unobtrusive Spam Protection for Couch Forms##
+### Unobtrusive Spam Protection for Couch Forms ###
 
 This tag is used to stop form spam by limiting the number of URLS allowed in a given field. Since the whole purpose of spam is to spread URLS, no URLs means no spam.
 
@@ -16,7 +16,7 @@ Download and unzip the too-many-urls.zip file. Place the unzipped folder in your
 require_once( K_COUCH_DIR.'addons/too-many-urls/too_many_urls.php' );
 ```
 
-###Using the Too Many URLs Tag###
+### Using the Too Many URLs Tag ###
 
 This tag is meant to be used in a form's k_success routine. It tests how many urls are in a given field and indicates whether the number exceeds the allowed amount. If there are too many, you interrupt processing and return an error. Otherwise go ahead and process the form. 
 
