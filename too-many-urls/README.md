@@ -32,5 +32,3 @@ For example:
 
 If the 'allowed' parameter is not specified, the default is '1'.
 
-More information about using add-ons with Couch is available on the Couch forum.
-http://www.couchcms.com/forum/
