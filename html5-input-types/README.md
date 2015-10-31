@@ -22,7 +22,7 @@ For example:
 
 ### Installing the Add-On ###
 
-Download and unzip the too-many-urls.zip file. Place the unzipped folder in your couch/addons/ folder. Register the add-on by adding a line of code to couch/addons/kfunctions.php. 
+Download and unzip the html5-input-types.zip file. Place the unzipped folder in your couch/addons/ folder. Register the add-on by adding a line of code to couch/addons/kfunctions.php. 
 
 ```
 #!php
