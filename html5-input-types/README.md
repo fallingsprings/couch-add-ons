@@ -11,7 +11,9 @@ The HTML 5 Input Types Add-On is still in development, but working. It provides 
 - type="date"
 - type="time"
 
-This add-on not only renders the input tags, but also adds automatic server-side validation of the input values. To disable the automatic validation, use the parameter `validate='0'`. For example:
+This add-on not only renders the input tags, but also adds automatic server-side validation of the input values. To disable the automatic validation, use the parameter `validate='0'`.
+
+For example:
 
 ```
 #!php
@@ -24,6 +26,6 @@ Download and unzip the too-many-urls.zip file. Place the unzipped folder in your
 
 ```
 #!php
-require_once( K_COUCH_DIR.'addons/too-many-urls/too_many_urls.php' );
+require_once( K_COUCH_DIR.'addons/html5-input-types/html5-input-types.php' );
 ```
 
