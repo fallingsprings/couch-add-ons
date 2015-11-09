@@ -229,7 +229,7 @@
                     }
 
                     if( !is_null($lower) && !is_null($higher) ){
-                        $this->err_msg = 'Not a valid number. The two nearest valid numbers are  '.$lower.' and '.$higher.'.';
+                        $this->err_msg = 'Not a valid number. The two nearest valid numbers are '.$lower.' and '.$higher.'.';
                     }
                     else{
                         $valid_value = ( !is_null($lower) ) ? $lower : $higher;
@@ -270,16 +270,18 @@
             $attr = parent::handle_params( $params );
             $pattern = '/^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/';
 
-
             // sanitize parameters
-            if( $attr['value'] != '' && !preg_match($pattern, $attr['value']) ){
-                die( "ERROR: Tag \"input\" type \"date\" - 'value' attribute must be a valid date string (YYYY-MM-DD)." );
+            $date = explode('-', $attr['value']);
+            if( $attr['value'] != '' && (!preg_match( $pattern, $attr['value'] ) || !checkdate($date[1], $date[2], $date[0])) ){
+                die( "ERROR: Tag \"input\" type \"date\" - 'value' attribute must be a valid date string." );
             }
-            if ( $attr['min'] != '' && !preg_match($pattern, $attr['min']) ){
-                die("ERROR: Tag \"input\" type \"date\" - 'min' attribute not a valid date string (YYYY-MM-DD).");
+            $date = explode('-', $attr['min']);
+            if ( $attr['min'] != '' && (!preg_match( $pattern, $attr['min'] ) || !checkdate($date[1], $date[2], $date[0])) ){
+                die("ERROR: Tag \"input\" type \"date\" - 'min' attribute not a valid date string.");
             }
-            if( $attr['max'] != '' && !preg_match($pattern, $attr['max']) ){
-                die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute not a valid date string (YYYY-MM-DD)." );
+            $date = explode('-', $attr['max']);
+            if( $attr['max'] != '' && (!preg_match( $pattern, $attr['max'] ) || !checkdate($date[1], $date[2], $date[0])) ){
+                die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute not a valid date string." );
             }
             if ( $attr['min'] != '' && $attr['max'] != '' && $attr['min'] >= $attr['max'] ){
                 die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute must be greater than 'min' attribute." );
@@ -303,34 +305,16 @@
             }
 
             if ( $this->validate != '0' ){
+                //Is it a valid date?
                 $value = $this->get_data();
                 $pattern = '/^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/';
-            
-                if ( !preg_match( $pattern, $value ) ){
-                    $this->err_msg = 'Not a valid date.';
-                    return false;
-                }
-                        
                 $date = explode('-', $value);
-                $month = $date[1];
-                $day = $date[2];
                 
-                //Shorter months
-                if ( $day == '31' && ($month == '02' || $month == '04' || $month == '06' || $month == '09' || $month == '11') ){
+                if ( !preg_match( $pattern, $value ) || !checkdate($date[1], $date[2], $date[0]) ){
                     $this->err_msg = 'Not a valid date.';
                     return false;
                 }
-                //February
-                if ( $month == '02' && $day == '30' ){
-                    $this->err_msg = 'Not a valid date.';
-                    return false;
-                }
-                //Leap Year
-                if ( $month == '02' && !date('L', $value) && $day == '29' ){
-                    $this->err_msg = 'Not a valid date.';
-                    return false;
-                }
-                    
+                                                          
                 //Is it in range?
                 if ( $this->min !='' && $value < $this->min ){
                     $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.' ;
@@ -340,6 +324,36 @@
                     $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.' ;
                     return false;
                 }
+                
+                //Is it in step?
+                $date = date_create($value);
+                $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-00'); //lowest valid date minus 1. Funky, but it works.
+                $diff = $min->diff($date)->format('%a');
+
+                if ( $diff/$this->step != intval($diff/$this->step) ){ // not a multiple of step
+                    $val = intval($diff/$this->step) * $this->step; //discard the remainder
+                    
+                    $lower = $min->add(new DateInterval('P'.$val.'D'))->format('Y-m-d');
+                    $higher = $min->add(new DateInterval('P'.$this->step.'D'))->format('Y-m-d');
+                    
+                    if ( $this->min == '' && $diff < $this->step ){
+                        $lower = null;
+                    }
+                    if ( $this->max != '' && $higher > $this->max){
+                        $higher = null;
+                    }
+                    
+                    if( !is_null($lower) && !is_null($higher) ){
+                        $this->err_msg = 'Not a valid date. The two nearest valid dates are '.$lower.' and '.$higher.'.';
+                    }
+                    else{
+                        $valid_value = ( !is_null($lower) ) ? $lower : $higher;
+                        $this->err_msg = 'Not a valid date. The nearest valid date is '.$valid_value.'.';
+                    }
+                    
+                    return false;
+                }                
+                                        
             }
 
         // Values are fine. Let parent handle custom validators, if any specified
@@ -413,25 +427,20 @@
                 }
                                         
                 //Is it in range?
-                    // First normalize values, then compare.
-                    function normalize_time($value){
-                        $time = explode(':', $value);
-                        $hours = $time[0];
-                        $minutes = $time[1];
-                        $seconds = $time[2];
-                        if ( !$seconds ) $seconds = '00';
-                        $time = $hours.$minutes.$seconds;
-                    
-                        return $time;
-                    }
-                if ( $this->min !='' && normalize_time($value) < normalize_time($this->min) ){
+                // Normalize values, then compare.
+                $time = strtotime($value);
+                $min = strtotime($this->min);
+                $max = strtotime($this->max);
+                                        
+                if ( $min !='' && $time < $min ){
                     $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.' ;
                     return false;
                 }
-                if ( $this->max !='' && normalize_time($value) > normalize_time($this->max) ){
+                if ( $ax !='' && $time > $maxn ){
                     $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.' ;
                     return false;
                 }
+                                
             }
 
         // Values are fine. Let parent handle custom validators, if any specified
