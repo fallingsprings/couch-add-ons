@@ -1,6 +1,6 @@
 # HTML5 Input Types Add-On #
 
-The HTML 5 Input Types Add-On is still in development, but working. It provides native Couch support for the HTML5 input types, including:
+The HTML 5 Input Types Add-On is still in development, but mostly working. It provides native Couch support for the HTML5 input types, including:
 
 - type="search"
 - type="tel"
