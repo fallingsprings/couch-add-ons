@@ -204,41 +204,43 @@
                     return false;
                 }
 
-                //Is it a valid number?
-                $step = $this->step;
+                //Is it in step?
+                if ( $this->step != 'any' ) {
+                    $step = $this->step;
 
-                //Must be a multiple of step.
-                $min = strlen( $this->min ) ? $this->min : 0;
-                $val = ( $value < 0 ) ? ( $value + $min ) : ( $value - $min );
-                $val = round( ($val / $step), 2 );
+                    //Must be a multiple of step.
+                    $min = strlen( $this->min ) ? $this->min : 0;
+                    $val = ( $value < 0 ) ? ( $value + $min ) : ( $value - $min );
+                    $val = round( ($val / $step), 2 );
 
-                if( $val != intval($val) ){ // not an exact multiple of step
-                    $val = intval($val) * $step;    // discard the fractional part
-                    if( $value < 0 ){
-                        $higher = $val - $min;
-                        $lower = $higher - $step;
-                    }
-                    else{
-                        $lower = $val + $min;
-                        $higher = $lower + $step;
-                    }
+                    if( $val != intval($val) ){ // not an exact multiple of step
+                        $val = intval($val) * $step;    // discard the fractional part
+                        if( $value < 0 ){
+                            $higher = $val - $min;
+                            $lower = $higher - $step;
+                        }
+                        else{
+                            $lower = $val + $min;
+                            $higher = $lower + $step;
+                        }
 
-                    if( $this->max != '' && $higher > $this->max ){
-                        $higher = null;
-                    }
-                    if( $this->min != '' && $lower < $this->min ){
-                        $lower = null;
-                    }
+                        if( $this->max != '' && $higher > $this->max ){
+                            $higher = null;
+                        }
+                        if( $this->min != '' && $lower < $this->min ){
+                            $lower = null;
+                        }
 
-                    if( !is_null($lower) && !is_null($higher) ){
-                        $this->err_msg = 'Not a valid number. The two nearest valid numbers are '.$lower.' and '.$higher.'.';
-                    }
-                    else{
-                        $valid_value = ( !is_null($lower) ) ? $lower : $higher;
-                        $this->err_msg = 'Not a valid number. The nearest valid number is '.$valid_value.'.';
-                    }
+                        if( !is_null($lower) && !is_null($higher) ){
+                            $this->err_msg = 'Not a valid number. The two nearest valid numbers are '.$lower.' and '.$higher.'.';
+                        }
+                        else{
+                            $valid_value = ( !is_null($lower) ) ? $lower : $higher;
+                            $this->err_msg = 'Not a valid number. The nearest valid number is '.$valid_value.'.';
+                        }
 
-                    return false;
+                        return false;
+                    }
                 }
             }
 
@@ -334,7 +336,7 @@
                 }
                 
                 //Is it in step?
-                if ( $step != 'any' ) {
+                if ( $this->step != 'any' ) {
                 $date = date_create($value);
                 $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-01'); //should be based on original value if min=''
                 $diff = $min->diff($date)->format('%a');
@@ -462,7 +464,7 @@
                 }
                 
                 //Is it in step?
-                if ( $step != 'any' ) {
+                if ( $this->step != 'any' ) {
                     $min = strlen( $min ) ? $min : strtotime('00:00'); //should be based on original value if min=''
                     $diff = $time - $min;
                 
