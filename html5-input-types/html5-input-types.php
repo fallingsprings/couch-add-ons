@@ -20,6 +20,8 @@
             $attr['max'] = trim($attr['max']);
             $attr['step'] = trim($attr['step']);
             $attr['validate'] = trim($attr['validate']);
+            
+            $attr['preset'] = strlen( $attr['value'] ) ? $attr['value'] : '';
 
             return $attr;
         }
@@ -210,6 +212,7 @@
 
                     //Must be a multiple of step.
                     $min = strlen( $this->min ) ? $this->min : 0;
+                    $min = !strlen( $this->min ) && strlen( $this->preset ) ? $this->preset : $min;
                     $val = ( $value < 0 ) ? ( $value + $min ) : ( $value - $min );
                     $val = round( ($val / $step), 2 );
 
@@ -338,7 +341,8 @@
                 //Is it in step?
                 if ( $this->step != 'any' ) {
                 $date = date_create($value);
-                $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-01'); //should be based on original value if min=''
+                $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-00'); //lowest valid date minus 1. Funky, but it seems to work.
+                $min = !strlen( $this->min ) && strlen( $this->preset ) ? date_create($this->preset) : $min;
                 $diff = $min->diff($date)->format('%a');
 
                 if ( $diff/$this->step != intval($diff/$this->step) ){ // not a multiple of step
@@ -465,7 +469,8 @@
                 
                 //Is it in step?
                 if ( $this->step != 'any' ) {
-                    $min = strlen( $min ) ? $min : strtotime('00:00'); //should be based on original value if min=''
+                    $min = strlen( $this->min ) ? $min : strtotime('00:00'); 
+                    $min = !strlen( $this->min ) && strlen( $this->preset ) ? strtotime($this->preset) : $min;
                     $diff = $time - $min;
                 
                     if ( $diff/$this->step != intval($diff/$this->step) ){ // not a multiple of step
