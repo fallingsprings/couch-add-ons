@@ -396,19 +396,15 @@
             }
             if ( $attr['min'] != '' && $attr['max'] != '' ) {
                 // Normalize time values before comparing.
-                $min = explode(':', $attr['min']);
-                $hours = $min[0];
-                $minutes = $min[1];
-                $seconds = $min[2];
-                if ( !$seconds ) $seconds = '00';
-                $min = $hours.$minutes.$seconds;
-
-                $max = explode(':', $attr['max']);
-                $hours = $max[0];
-                $minutes = $max[1];
-                $seconds = $max[2];
-                if ( !$seconds ) $seconds = '00';
-                $max = $hours.$minutes.$seconds;
+                $min = strtotime($attr['min']);
+                $max = strtotime($attr['max']);
+                
+                //preserve milliseconds
+                $min_ms = explode('.', $attr['min']);
+                $max_ms = explode('.', $attr['max']);
+                
+                if ( $tmin_ms[1] ) $min = $min.'.'.$min_ms[1];
+                if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
 
                 if( $min > $max ){
                 die( "ERROR: Tag \"input\" type \"time\" - 'max' attribute must be greater than 'min' attribute." );
