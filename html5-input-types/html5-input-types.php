@@ -18,7 +18,7 @@
             $attr['value'] = trim($attr['value']);
             $attr['min'] = trim($attr['min']);
             $attr['max'] = trim($attr['max']);
-            $attr['step'] = trim($attr['step']);
+            $attr['step'] = strtolower( trim($attr['step']) );
             $attr['validate'] = trim($attr['validate']);
             
             $attr['preset'] = strlen( $attr['value'] ) ? $attr['value'] : '';
@@ -161,8 +161,8 @@
             if( $attr['max'] != '' && !is_numeric($attr['max']) ){
                 die( "ERROR: Tag \"input\" type \"".$type."\" - 'max' attribute must be numeric." );
             }
-            if ( $attr['min'] != '' && $attr['max'] != '' && $attr['min'] >= $attr['max'] ){
-                die( "ERROR: Tag \"input\" type \"".$type."\" - 'max' attribute must be greater than 'min' attribute." );
+            if ( $attr['min'] != '' && $attr['max'] != '' && $attr['min'] > $attr['max'] ){
+                die( "ERROR: Tag \"input\" type \"".$type."\" - 'max' attribute cannot be less than 'min' attribute." );
             }
             if ( $attr['step'] != 'any' ){
                 if( $attr['step'] == '' ){
@@ -218,7 +218,7 @@
 
                     if( $val != intval($val) ){ // not an exact multiple of step
                         $val = intval($val) * $step;    // discard the fractional part
-                        if( $value < 0 ){
+                        if( $value < 0 || ( $basis == $this->preset && $value > 0  ) ){
                             $higher = $val - $min;
                             $lower = $higher - $step;
                         }
@@ -276,7 +276,6 @@
 
             $attr = parent::handle_params( $params );
             $pattern = '/^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/';
-            //Get original value for step verification if min=''
 
             // sanitize parameters
             $date = explode('-', $attr['value']);
@@ -291,8 +290,8 @@
             if( $attr['max'] != '' && (!preg_match( $pattern, $attr['max'] ) || !checkdate($date[1], $date[2], $date[0])) ){
                 die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute not a valid date string." );
             }
-            if ( $attr['min'] != '' && $attr['max'] != '' && $attr['min'] >= $attr['max'] ){
-                die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute must be greater than 'min' attribute." );
+            if ( $attr['min'] != '' && $attr['max'] != '' && $attr['min'] > $attr['max'] ){
+                die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute cannot be less than 'min' attribute." );
             }
             if( $attr['step'] == '' ){
                 $attr['step'] = '1';
@@ -340,36 +339,36 @@
                 
                 //Is it in step?
                 if ( $this->step != 'any' ) {
-                $date = date_create($value);
-                $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-00'); //lowest valid date minus 1. Funky, but it seems to work.
-                $min = !strlen( $this->min ) && strlen( $this->preset ) ? date_create($this->preset) : $min;
-                $diff = $min->diff($date)->format('%a');
+                    $date = date_create($value);
+                    $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-00'); //lowest valid date minus 1. Kinda funky, but it works.
+                    $min = !strlen( $this->min ) && strlen( $this->preset ) ? date_create($this->preset) : $min;
+                    $diff = $min->diff($date)->format('%a');
+                    $val = round($diff/$this->step, 2);
 
-                if ( $diff/$this->step != intval($diff/$this->step) ){ // not a multiple of step
-                    $val = intval($diff/$this->step) * $this->step; //discard the remainder
+                    if ( $val != intval($val) ){ // not an exact multiple of step
+                        $val = intval($val) * $this->step;    // discard the fractional part
                     
-                    $lower = $min->add(new DateInterval('P'.$val.'D'))->format('Y-m-d');
-                    $higher = $min->add(new DateInterval('P'.$this->step.'D'))->format('Y-m-d');
+                        $lower = $min->add(new DateInterval('P'.$val.'D'))->format('Y-m-d');
+                        $higher = $min->add(new DateInterval('P'.$this->step.'D'))->format('Y-m-d');
                     
-                    if ( $this->min == '' && $diff < $this->step ){
-                        $lower = null;
-                    }
-                    if ( $this->max != '' && $higher > $this->max){
-                        $higher = null;
-                    }
+                        if ( $this->min == '' && $diff < $this->step ){
+                            $lower = null;
+                        }
+                        if ( $this->max != '' && $higher > $this->max){
+                            $higher = null;
+                        }
                     
-                    if( !is_null($lower) && !is_null($higher) ){
-                        $this->err_msg = 'Not a valid date. The two nearest valid dates are '.$lower.' and '.$higher.'.';
-                    }
-                    else{
-                        $valid_value = ( !is_null($lower) ) ? $lower : $higher;
-                        $this->err_msg = 'Not a valid date. The nearest valid date is '.$valid_value.'.';
-                    }
+                        if( !is_null($lower) && !is_null($higher) ){
+                            $this->err_msg = 'Not a valid date. The two nearest valid dates are '.$lower.' and '.$higher.'.';
+                        }
+                        else{
+                            $valid_value = ( !is_null($lower) ) ? $lower : $higher;
+                            $this->err_msg = 'Not a valid date. The nearest valid date is '.$valid_value.'.';
+                        }
                     
-                    return false;
-                }
-                }
-                                        
+                        return false;
+                    }
+                }                                    
             }
 
         // Values are fine. Let parent handle custom validators, if any specified
@@ -386,13 +385,13 @@
 
             // sanitize parameters
             if( $attr['value'] != '' && !preg_match($pattern, $attr['value']) ){
-                die( "ERROR: Tag \"input\" type \"time\" - 'value' attribute must be a valid time string (00:00{.00.000})." );
+                die( "ERROR: Tag \"input\" type \"time\" - 'value' attribute must be a valid time string." );
             }
             if ( $attr['min'] != '' && !preg_match($pattern, $attr['min']) ){
-                die("ERROR: Tag \"input\" type \"time\" - 'min' attribute not a valid time string (00:00{.00.000}).");
+                die("ERROR: Tag \"input\" type \"time\" - 'min' attribute not a valid time string.");
             }
             if( $attr['max'] != '' && !preg_match($pattern, $attr['max']) ){
-                die( "ERROR: Tag \"input\" type \"time\" - 'max' attribute not a valid time string (00:00{.00.000})." );
+                die( "ERROR: Tag \"input\" type \"time\" - 'max' attribute not a valid time string." );
             }
             if ( $attr['min'] != '' && $attr['max'] != '' ) {
                 // Normalize time values before comparing.
@@ -407,7 +406,7 @@
                 if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
 
                 if( $min > $max ){
-                die( "ERROR: Tag \"input\" type \"time\" - 'max' attribute must be greater than 'min' attribute." );
+                die( "ERROR: Tag \"input\" type \"time\" - 'max' attribute cannot be less than 'min' attribute." );
                 }
             }
             if ( $attr['step'] != 'any' ){
@@ -465,15 +464,15 @@
                 
                 //Is it in step?
                 if ( $this->step != 'any' ) {
-                    $min = strlen( $this->min ) ? $min : strtotime('00:00'); 
                     $min = !strlen( $this->min ) && strlen( $this->preset ) ? strtotime($this->preset) : $min;
                     $diff = $time - $min;
-                
-                    if ( $diff/$this->step != intval($diff/$this->step) ){ // not a multiple of step
-                        $val = intval($diff/$this->step) * $this->step; //discard the remainder
+                    $val = round($diff/$this->step, 3);
+
+                    if ( $val != intval($val) ){ // not an exact multiple of step
+                        $val = intval($val) * $this->step;    // discard the fractional part
                     
-                        $lower = $min + $val;
-                        $higher = $lower + $this->step;
+                        $higher = $min + $val;
+                        $lower = $higher - $this->step;
                     
                         if ( $this->min != '' && $lower < $min){
                             $lower = null;
@@ -482,8 +481,6 @@
                             $lower_ms = explode('.', $lower); //preserve milliseconds
                             $lower = date('H:i:s', $lower);
                             $lower =  strlen( $lower_ms[1] ) ? $lower = $lower.'.'.$lower_ms[1] : $lower;
-                            $time = explode(':', $lower); //trim seconds if 0
-                            $lower = $time[2] != 0 ? $lower : $time[0].':'.$time[1];
                         }
                     
                         if ( $this->max != '' && $higher > $max){
@@ -493,8 +490,6 @@
                             $higher_ms = explode('.', $higher); //preserve milliseconds
                             $higher = date('H:i:s', $higher);
                             $higher =  strlen( $higher_ms[1] ) ? $higher = $higher.'.'.$higher_ms[1] : $higher;
-                            $time = explode(':', $higher); //trim seconds if 0
-                            $higher = $time[2] != 0 ? $higher : $time[0].':'.$time[1];
                         }
                     
                         if( !is_null($lower) && !is_null($higher) ){
@@ -506,8 +501,7 @@
                         }
                         return false;
                     }  
-                }
-              
+                }           
             }
 
         // Values are fine. Let parent handle custom validators, if any specified
