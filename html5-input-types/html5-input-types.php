@@ -208,38 +208,31 @@
 
                 //Is it in step?
                 if ( $this->step != 'any' ) {
-                    $step = $this->step;
+                    $basis = strlen( $this->min ) ? $this->min : 0;
+                    $basis = !strlen( $this->min ) && strlen( $this->preset ) ? $this->preset : $basis;
+                    $diff = abs( $basis - $value );
+                    $number_of_steps = round( ($diff / $this->step), 12 );
 
-                    //Must be a multiple of step.
-                    $min = strlen( $this->min ) ? $this->min : 0;
-                    $min = !strlen( $this->min ) && strlen( $this->preset ) ? $this->preset : $min;
-                    $val = ( $value < 0 ) ? ( $value + $min ) : ( $value - $min );
-                    $val = round( ($val / $step), 2 );
-
-                    if( $val != intval($val) ){ // not an exact multiple of step
-                        $val = intval($val) * $step;    // discard the fractional part
-                        if( $value < 0 || ( $basis == $this->preset && $value > 0  ) ){
-                            $higher = $val - $min;
-                            $lower = $higher - $step;
+                    if ( $number_of_steps != intval($number_of_steps) ){ //Not a multiple of step
+                        $number_of_steps = intval($number_of_steps) * $this->step; //Discard the remainder
+                        if( $value < $basis ){
+                            $higher = $basis - $number_of_steps;
+                            $lower = $higher - $this->step;
                         }
-                        else{
-                            $lower = $val + $min;
-                            $higher = $lower + $step;
+                        if( $value > $basis ){
+                            $lower = $basis + $number_of_steps;
+                            $higher = $lower + $this->step;
                         }
 
                         if( $this->max != '' && $higher > $this->max ){
                             $higher = null;
                         }
-                        if( $this->min != '' && $lower < $this->min ){
-                            $lower = null;
-                        }
 
-                        if( !is_null($lower) && !is_null($higher) ){
+                        if( !is_null($higher) ){
                             $this->err_msg = 'Not a valid number. The two nearest valid numbers are '.$lower.' and '.$higher.'.';
                         }
                         else{
-                            $valid_value = ( !is_null($lower) ) ? $lower : $higher;
-                            $this->err_msg = 'Not a valid number. The nearest valid number is '.$valid_value.'.';
+                            $this->err_msg = 'Not a valid number. The nearest valid number is '.$lower.'.';
                         }
 
                         return false;
@@ -340,18 +333,24 @@
                 //Is it in step?
                 if ( $this->step != 'any' ) {
                     $date = date_create($value);
-                    $min = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-00'); //lowest valid date minus 1. Kinda funky, but it works.
-                    $min = !strlen( $this->min ) && strlen( $this->preset ) ? date_create($this->preset) : $min;
-                    $diff = $min->diff($date)->format('%a');
-                    $val = round($diff/$this->step, 2);
+                    $basis = strlen( $this->min ) ? date_create($this->min) : date_create('0001-01-00'); //lowest valid date minus 1. Kinda funky, but it works.
+                    $basis = !strlen( $this->min ) && strlen( $this->preset ) ? date_create($this->preset) : $basis;
+                    $diff = $basis->diff($date)->format('%a');
+                    $number_of_steps = round($diff/$this->step, 2);
 
-                    if ( $val != intval($val) ){ // not an exact multiple of step
-                        $val = intval($val) * $this->step;    // discard the fractional part
+                    if ( $number_of_steps != intval($number_of_steps) ){ //Not a multiple of step
+                        $number_of_steps = intval($number_of_steps) * $this->step; //Discard the remainder
                     
-                        $lower = $min->add(new DateInterval('P'.$val.'D'))->format('Y-m-d');
-                        $higher = $min->add(new DateInterval('P'.$this->step.'D'))->format('Y-m-d');
-                    
-                        if ( $this->min == '' && $diff < $this->step ){
+                        if( $date < $basis ){
+                            $higher = $basis->sub(new DateInterval('P'.$number_of_steps.'D'))->format('Y-m-d');
+                            $lower = date_create($higher)->sub(new DateInterval('P'.$this->step.'D'))->format('Y-m-d');
+                        }
+                        if( $date > $basis ){
+                            $lower = $basis->add(new DateInterval('P'.$number_of_steps.'D'))->format('Y-m-d');
+                            $higher = date_create($lower)->add(new DateInterval('P'.$this->step.'D'))->format('Y-m-d');
+                        }
+                        
+                        if ( $basis == date_create('0001-01-00') && $diff < $this->step ){
                             $lower = null;
                         }
                         if ( $this->max != '' && $higher > $this->max){
@@ -395,14 +394,15 @@
             }
             if ( $attr['min'] != '' && $attr['max'] != '' ) {
                 // Normalize time values before comparing.
-                $min = strtotime($attr['min']);
-                $max = strtotime($attr['max']);
+                // strtotime has too many digits to allow for milliseconds, so subtract 1000000000
+                $min = strtotime($attr['min']) - 1000000000;
+                $max = strtotime($attr['max']) - 1000000000;
                 
                 //preserve milliseconds
                 $min_ms = explode('.', $attr['min']);
                 $max_ms = explode('.', $attr['max']);
                 
-                if ( $tmin_ms[1] ) $min = $min.'.'.$min_ms[1];
+                if ( $min_ms[1] ) $min = $min.'.'.$min_ms[1];
                 if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
 
                 if( $min > $max ){
@@ -439,9 +439,9 @@
                 }
                                         
                 //Is it in range?
-                $time = strtotime($value);
-                $min = strtotime($this->min);
-                $max = strtotime($this->max);
+                $time = strtotime($value) - 1000000000;
+                $min = strlen( $this->min ) ? $min = (strtotime($this->min) - 1000000000) : '';
+                $max = strlen( $this->max ) ? $max = (strtotime($this->max) - 1000000000) : '';
                 
                 //preserve milliseconds
                 $time_ms = explode('.', $value);
@@ -449,38 +449,53 @@
                 $max_ms = explode('.', $this->max);
                 
                 if ( $time_ms[1] ) $time = $time.'.'.$time_ms[1];
-                if ( $tmin_ms[1] ) $min = $min.'.'.$min_ms[1];
+                if ( $min_ms[1] ) $min = $min.'.'.$min_ms[1];
                 if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
 
                                         
                 if ( $min !='' && $time < $min ){
-                    $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.' ;
+                    $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.';
                     return false;
                 }
                 if ( $max !='' && $time > $max ){
-                    $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.' ;
+                    $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.';
                     return false;
                 }
                 
                 //Is it in step?
                 if ( $this->step != 'any' ) {
-                    $min = !strlen( $this->min ) && strlen( $this->preset ) ? strtotime($this->preset) : $min;
-                    $diff = $time - $min;
-                    $val = round($diff/$this->step, 3);
+                    if ( !strlen( $this->min ) && strlen( $this->preset ) ){
+                        $preset = strtotime($this->preset) - 1000000000;
+                        $preset_ms = explode('.', $this->preset);
+                        if ( $preset_ms[1] ) $preset = $preset.'.'.$preset_ms[1];
+                    } 
+                    $basis = !strlen( $this->min ) && strlen( $this->preset ) ? $preset : $min;
+                    $diff = abs($basis - $time);
+                    $number_of_steps = round($diff/$this->step, 3);
 
-                    if ( $val != intval($val) ){ // not an exact multiple of step
-                        $val = intval($val) * $this->step;    // discard the fractional part
+                    if ( $number_of_steps != intval($number_of_steps) ){ //Not a multiple of step
+                        $number_of_steps = intval($number_of_steps) * $this->step; //Discard the remainder
                     
-                        $higher = $min + $val;
+                        if ( $time > $basis ){
+                        $lower = $basis + $number_of_steps;
+                        $higher = $lower + $this->step;
+                        }
+                        if ( $time < $basis ){
+                        $higher = $basis - $number_of_steps;
                         $lower = $higher - $this->step;
-                    
-                        if ( $this->min != '' && $lower < $min){
+                        }
+                        
+                       if ( $lower < 448514000 ){
                             $lower = null;
                         }
                         else {
                             $lower_ms = explode('.', $lower); //preserve milliseconds
-                            $lower = date('H:i:s', $lower);
-                            $lower =  strlen( $lower_ms[1] ) ? $lower = $lower.'.'.$lower_ms[1] : $lower;
+                            if( strlen($lower_ms[1]) ){
+                                $lower_ms[1] = '.'.$lower_ms[1];
+                                $lower_ms[1] = $lower_ms[1] * 1000;
+                            }
+                            $lower = date('H:i:s', $lower + 1000000000);
+                            $lower =  strlen( $lower_ms[1] ) ? $lower.'.'.$lower_ms[1] : $lower;
                         }
                     
                         if ( $this->max != '' && $higher > $max){
@@ -488,8 +503,12 @@
                         }
                         else {
                             $higher_ms = explode('.', $higher); //preserve milliseconds
-                            $higher = date('H:i:s', $higher);
-                            $higher =  strlen( $higher_ms[1] ) ? $higher = $higher.'.'.$higher_ms[1] : $higher;
+                            if( strlen($higher_ms[1]) ){
+                                $higher_ms[1] = '.'.$higher_ms[1];
+                                $higher_ms[1] = $higher_ms[1] * 1000;
+                            }
+                            $higher = date('H:i:s', $higher + 1000000000);
+                            $higher =  strlen( $higher_ms[1] ) ? $higher.'.'.$higher_ms[1] : $higher;
                         }
                     
                         if( !is_null($lower) && !is_null($higher) ){
