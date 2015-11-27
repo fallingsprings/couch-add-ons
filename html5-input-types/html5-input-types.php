@@ -116,7 +116,7 @@
             $pattern = '/^#([A-Fa-f0-9]{6})$/';
             
             if ( !preg_match( $pattern, $value ) ){
-                 die( "ERROR: Tag \"input\" type \"color\" - '".$value."' is not a valid hexadecimal color (#000000)." );
+                 die( "ERROR: Tag \"input\" type \"color\" - '".$value."' is not a valid hexadecimal color." );
             }
             
             $attr['value'] = $value;
@@ -174,7 +174,6 @@
                     }
                 }
             }
-
             return $attr;
         }
 
@@ -227,19 +226,16 @@
                         if( $this->max != '' && $higher > $this->max ){
                             $higher = null;
                         }
-
                         if( !is_null($higher) ){
                             $this->err_msg = 'Not a valid number. The two nearest valid numbers are '.$lower.' and '.$higher.'.';
                         }
                         else{
                             $this->err_msg = 'Not a valid number. The nearest valid number is '.$lower.'.';
                         }
-
                         return false;
                     }
                 }
             }
-
             // Values are fine. Let parent handle custom validators, if any specified
             return parent::validate();
         }
@@ -258,7 +254,6 @@
             if( $attr['max'] == '' ){
                 $attr['max'] = '100';
             }
-
             return $attr;
         }
     }
@@ -286,9 +281,6 @@
             if ( $attr['min'] != '' && $attr['max'] != '' && $attr['min'] > $attr['max'] ){
                 die( "ERROR: Tag \"input\" type \"date\" - 'max' attribute cannot be less than 'min' attribute." );
             }
-            if( $attr['step'] == '' ){
-                $attr['step'] = '1';
-            }
             if ( $attr['step'] != 'any' ){
                 if( $attr['step'] == '' ){
                     $attr['step'] = '1';
@@ -314,7 +306,6 @@
                 $value = $this->get_data();
                 $pattern = '/^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/';
                 $date = explode('-', $value);
-                
                 if ( !preg_match( $pattern, $value ) || !checkdate($date[1], $date[2], $date[0]) ){
                     $this->err_msg = 'Not a valid date.';
                     return false;
@@ -364,7 +355,6 @@
                             $valid_value = ( !is_null($lower) ) ? $lower : $higher;
                             $this->err_msg = 'Not a valid date. The nearest valid date is '.$valid_value.'.';
                         }
-                    
                         return false;
                     }
                 }                                    
@@ -394,21 +384,20 @@
             }
             if ( $attr['min'] != '' && $attr['max'] != '' ) {
                 // Normalize time values before comparing.
-                // strtotime has too many digits to allow for milliseconds, so subtract 1000000000
+                // Too many digits in strtotimeto, so subtract 1000000000 to make room for milliseconds
                 $min = strtotime($attr['min']) - 1000000000;
-                $max = strtotime($attr['max']) - 1000000000;
-                
+                $max = strtotime($attr['max']) - 1000000000;              
                 //preserve milliseconds
                 $min_ms = explode('.', $attr['min']);
                 $max_ms = explode('.', $attr['max']);
                 
                 if ( $min_ms[1] ) $min = $min.'.'.$min_ms[1];
                 if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
-
                 if( $min > $max ){
                 die( "ERROR: Tag \"input\" type \"time\" - 'max' attribute cannot be less than 'min' attribute." );
                 }
             }
+            
             if ( $attr['step'] != 'any' ){
                 if( $attr['step'] == '' ){
                     $attr['step'] = '1';
@@ -432,17 +421,16 @@
             if ( $this->validate != '0' ){
                 $value = $this->get_data();
                 $pattern = '/^(([0-1][0-9])|([2][0-3])):([0-5][0-9])(:([0-5][0-9])(.([0-9]?[0-9]?[0-9]))?)?$/';
-            
                 if ( !preg_match( $pattern, $value ) ){
                     $this->err_msg = 'Not a valid time.';
                     return false;
                 }
                                         
                 //Is it in range?
-                $time = strtotime($value) - 1000000000;
+                //Too many digits in strtotime, so subtract 1000000000 to make room for milliseconds
+                $time = strtotime($value) - 1000000000; 
                 $min = strlen( $this->min ) ? $min = (strtotime($this->min) - 1000000000) : '';
                 $max = strlen( $this->max ) ? $max = (strtotime($this->max) - 1000000000) : '';
-                
                 //preserve milliseconds
                 $time_ms = explode('.', $value);
                 $min_ms = explode('.', $this->min);
@@ -451,7 +439,6 @@
                 if ( $time_ms[1] ) $time = $time.'.'.$time_ms[1];
                 if ( $min_ms[1] ) $min = $min.'.'.$min_ms[1];
                 if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
-
                                         
                 if ( $min !='' && $time < $min ){
                     $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.';
@@ -485,7 +472,7 @@
                         $lower = $higher - $this->step;
                         }
                         
-                       if ( $lower < 448514000 ){
+                       if ( $lower < 448514000 ){ //Can't be less than 00:00
                             $lower = null;
                         }
                         else {
@@ -522,7 +509,6 @@
                     }  
                 }           
             }
-
         // Values are fine. Let parent handle custom validators, if any specified
         return parent::validate();
         }
