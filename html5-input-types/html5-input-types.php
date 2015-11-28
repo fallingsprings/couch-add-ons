@@ -398,6 +398,9 @@
                 }
             }
             
+            //The HTML5 Standard (http://www.w3.org/TR/html5/) specifies a default step of 60.
+            //However, the Chrome browser uses a default step of 1.
+            //Given this mismatch, I've chosen to follow the behavior of the only major browser to implement type="time". This decision may need to be revisited in the future.
             if ( $attr['step'] != 'any' ){
                 if( $attr['step'] == '' ){
                     $attr['step'] = '1';
