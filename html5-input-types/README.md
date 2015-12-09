@@ -2,15 +2,15 @@
 
 The HTML 5 Input Types Add-On provides native Couch support for the HTML5 input types, including:
 
-    type="email"
-    type="url"
-    type="tel"
-    type="search"
-    type="color"
-    type="number"
-    type="range"
-    type="date"
-    type="time"
+- type="email"
+- type="url"
+- type="tel"
+- type="search"
+- type="color"
+- type="number"
+- type="range"
+- type="date"
+- type="time"
 
 Once the add-on is activated, you can use these types just like you would any of the standard input types.
 
