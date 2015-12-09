@@ -1,9 +1,5 @@
 # Couch Add-Ons #
 
-These are add-ons for CouchCMS, a free and open-source content management system for web designers. Couch CMS is lightweight and easy to use, but it's also powerful and flexible.
+These are add-ons for CouchCMS, an open-source content management system for web designers.
 
 Get it! http://www.couchcms.com/
-
-### Using Couch Add-Ons ###
-
-Download and unzip the add-on. Place it in your couch/addons/ folder. Register the add-on by adding a line of code to couch/addons/kfunctions.php. Details are covered separately in each add-on's README.
