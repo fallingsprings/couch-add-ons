@@ -24,6 +24,7 @@ Since automatic validation can sometimes interfere with what you want to accompl
 <cms:input type='email' validate='0' required='1' />
 ```
 
+
 Please be aware that PHP is only cabable of understanding numbers up to 12 digits, so server-side validation may fail with very large numbers or numbers with too many decimal places. But for most ordinary uses you are unlikely to run up against this limitation.
 
 ### Installing the Add-On ###
