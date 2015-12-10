@@ -29,5 +29,5 @@ For example:
 
 Download and unzip the too-many-urls.zip file. Place the unzipped folder in your couch/addons/ folder. Register the add-on by adding a line of code to couch/addons/kfunctions.php. 
 ```
-	require_once( K_COUCH_DIR.'addons/too-many-urls/too_many_urls.php' );
+require_once( K_COUCH_DIR.'addons/too-many-urls/too_many_urls.php' );
 ```
