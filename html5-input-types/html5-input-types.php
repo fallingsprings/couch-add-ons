@@ -258,7 +258,7 @@
         }
     }
 
-       class HTML5InputDate extends HTML5InputTypes{
+    class HTML5InputDate extends HTML5InputTypes{
         function handle_params( $params ){
             global $FUNCS;
 
