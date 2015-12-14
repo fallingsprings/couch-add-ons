@@ -4,7 +4,7 @@
     
     class TooManyUrls{
         
-        function too_many_urls_handler( $params, $node ){
+        function too_many_urls( $params, $node ){
             global $FUNCS, $CTX;
             if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
             
@@ -28,4 +28,4 @@
         }
     }
     
-    $FUNCS->register_tag( 'too_many_urls', array('TooManyUrls', 'too_many_urls_handler') );
+    $FUNCS->register_tag( 'too_many_urls', array('TooManyUrls', 'too_many_urls') );
