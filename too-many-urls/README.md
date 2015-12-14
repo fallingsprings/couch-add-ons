@@ -9,14 +9,14 @@ Since most spammers seem to prefer sending multiple URLs, I've found that allowi
 
 ### Using the Too Many URLs Tag ###
 
-This tag is meant to be used in a form's k_success routine. It tests how many urls are in a given field and indicates whether the number exceeds the allowed amount. (If the 'max' parameter is not specified, the default is '1'.)
+This tag is meant to be used in a form's k_success routine. It tests how many urls are in a given field and indicates whether the number exceeds the allowed amount. (If the 'allowed' parameter is not specified, the default is '1'.)
 
 If there are too many, you can interrupt processing and return an error. Otherwise go ahead and process the form. 
 
 For example:
 ```
     <cms:if k_success >
-        <cms:if "<cms:too_many_urls in='frm_message' max='1' />" >
+        <cms:if "<cms:too_many_urls in='frm_message' allowed='1' />" >
             <p class="error_msg">Sorry. There are too many URLs in your message. If you need to send us a link, please contact us first.</p>
         <cms:else/>
            ...Not spam. Process form...
