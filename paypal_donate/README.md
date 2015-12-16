@@ -1,6 +1,6 @@
 #PayPal Donate Button
 
-The paypal_donate tag is a lot like the paypal_button tag (http://docs.couchcms.com/tags-reference/paypal_button.html), but a little simpler. Unlike the paypal_button tag, it does not require a clonable template or external variables. All necessary information is passed through parameters of the tag. It can be used together with the paypal_processor tag (http://docs.couchcms.com/tags-reference/paypal_processor.html). See Core Concepts - PayPal (http://docs.couchcms.com/concepts/paypal.html) for a detailed discussion.
+The paypal_donate tag is a lot like the [paypal_button](http://docs.couchcms.com/tags-reference/paypal_button.html) tag , but a little simpler. Unlike the paypal_button tag, it does not require a clonable template or external variables. All necessary information is passed through parameters of the tag. It can be used together with the [paypal_processor](http://docs.couchcms.com/tags-reference/paypal_processor.html) tag . See [Core Concepts - PayPal](http://docs.couchcms.com/concepts/paypal.html) for a detailed discussion.
 
 ##Parameters
 - image
@@ -14,17 +14,17 @@ The paypal_donate tag is a lot like the paypal_button tag (http://docs.couchcms.
 This parameter is used to set the image used as the button.
 You can either choose to use an image of your own or you may use one of the buttons made available by PayPal. Alternatively, you can use an ordinary submit button and style it with CSS.
 
-**Using a CSS button -**
+####Using a CSS button -
 
 Provide the image parameter with the string "css:My Custom Text". This will create a submit button with the value "My Custom Text" and the class name "pp_submit" which can be used to apply your own styles to the button.
 
 	<cms:paypal_button image="css:Donate" />
 
-**Using your own image -**
+####Using your own image -
 
 	<cms:paypal_button image="<cms:show k_site_link />/images/my_button.gif" />
 
-**Using PayPal provided images -**
+####Using PayPal provided images -
 
 To use these images, set the image parameter to a number ranging from 0 to 6.
 
@@ -43,7 +43,7 @@ Set this to the name of the organization, fund, or campaign. If not set, the don
 ###reference
 
 An optional field for specifying donation details.
-<cms:paypal_donate purpose='My Great Cause' reference='Spring Gala' />
+	<cms:paypal_donate purpose='My Great Cause' reference='Spring Gala' />
 
 ###amount
 
