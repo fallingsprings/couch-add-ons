@@ -22,11 +22,14 @@ Set this to the name of the organization, fund, or campaign, or the purpose of t
 ###reference
 
 An optional field for specifying donation details. The paypal_processor returns this as `pp_item_number`.
-    <cms:paypal_donate purpose='A Great Cause' reference='Spring Gala' />
+
+```
+<cms:paypal_donate purpose='A Great Cause' reference='Spring Gala' />
+````
 
 ###amount
 
-Specify an amount or leave it empty to allow donors to enter an amount on the PayPal website.
+Specify an amount or leave it empty to allow donors to enter any amount on the PayPal website.
 
 ###image
 This parameter is used to set the image used as the button.
@@ -34,21 +37,30 @@ You can either choose to use an image of your own or you may use one of the butt
 
 ####Using your own image -
 
-	<cms:paypal_button image="<cms:show k_site_link />/images/my_button.gif" />
+```
+<cms:paypal_button image="<cms:show k_site_link />/images/my_button.gif" />
+```
+
 
 ####Using PayPal provided images -
 
 To use these images, set the image parameter to a number ranging from 0 to 6.
 
-	<cms:paypal_button image='3' />
+```
+<cms:paypal_button image='3' />
+```
+
 
 If not specified, '0' is the default. The numbers represent a range of PayPal donate button images.
 
 ####Using a CSS button -
 
-Provide the image parameter with a string in the form of "css:My Custom Text". This will create an html button with the value "My Custom Text". The cms:paypal_donate tag accepts an id and/or classes which will be attached to the button so that you can apply styles; id and class names can be used on image buttons as well.
+Provide the image parameter with a string in the form of "css:My Custom Text". This will create an html button with the value "My Custom Text". The `<cms:paypal_donate />` tag accepts an id and/or classes which will be attached to the button so that you can apply styles; id and class names can be used on image buttons as well.
 
-    <cms:paypal_donate image="css:Donate Now" id="donate-button" class="button" />
+```
+<cms:paypal_donate image="css:Donate Now" id="donate-button" class="button" />
+```
+
 
 ###processor
 
