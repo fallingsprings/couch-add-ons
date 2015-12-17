@@ -72,7 +72,7 @@
             $html .= '<input type="hidden" name="cancel_return" value="'.$cancel_url.'"/>';
             $html .= '<input type="hidden" value="'.$notify_url.'" name="notify_url"/>';
             if( $css[1] ){
-                $html .= '<input type="submit" class="pp_submit" value="'.trim( $css[1] ).'"/>';
+                $html .= '<input type="submit" class="pp_submit_btn" value="'.trim( $css[1] ).'"/>';
             }
             else{
                 $html .= '<input type="image" border="0" alt="Make payments with PayPal - it\'s fast, free and secure!"';
