@@ -36,13 +36,13 @@ You can either choose to use an image of your own or you may use one of the butt
 
 ####Using your own image -
 
-	<cms:paypal_button image="<cms:show k_site_link />/images/my_button.gif" />
+	<cms:paypal_donate button image="<cms:show k_site_link />/images/my_button.gif" />
 
 ####Using PayPal provided images -
 
 To use these images, set the image parameter to a number ranging from 0 to 6.
 
-	<cms:paypal_button image='3' />
+	<cms:paypal_donatete donatebutton image='3' />
 
 If not specified, '0' is the default. The numbers represent a range of PayPal donate button images.
 
