@@ -48,7 +48,7 @@ If not specified, '0' is the default. The numbers represent a range of PayPal do
 
 ####Using a CSS button -
 
-Provide the image parameter with a string in the form of "css:My Custom Text". This will create an html button with the value "My Custom Text". The `<cms:paypal_donate />` tag accepts an id and/or classes which will be attached to the button so that you can apply styles; id and class names can be used on image buttons as well.
+Provide the image parameter with a string in the form of "css:My Custom Text". This will create an html button with the value "My Custom Text". The paypal_donate tag accepts an id and/or classes which will be attached to the button so that you can apply styles; id and class names can be used on image buttons as well.
 
     <cms:paypal_donate image="css:Donate Now" id="donate-button" class="button" />
 
