@@ -17,7 +17,7 @@ This tag can be used together with the [paypal_processor tag](http://docs.couchc
 
 ###purpose
 
-Set this to the name of the organization, fund, or campaign, or the purpose of the donation. The paypal_processor returns this as 'pp_item_name'.
+Set this to the name of the organization, fund, or campaign, or the purpose of the donation. The paypal_processor returns this as `pp_item_name`.
 
 ###reference
 
@@ -42,7 +42,7 @@ To use these images, set the image parameter to a number ranging from 0 to 6.
 
 	<cms:paypal_button image='3' />
 
-If not specified, the first image is the default. The numbers represent a range of PayPal donate button images.
+If not specified, '0' is the default. The numbers represent a range of PayPal donate button images.
 
 ####Using a CSS button -
 

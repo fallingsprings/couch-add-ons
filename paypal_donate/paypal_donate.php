@@ -17,7 +17,9 @@
                               'custom'=>'',
                               'purpose'=>'',
                               'reference'=>'',
-                              'amount'=>''
+                              'amount'=>'',
+                              'id'=>'',
+                              'class'=>''
                              ),
                         $params)
                    );
@@ -30,6 +32,9 @@
             $item_name = trim( $purpose );
             $item_number = trim( $reference );
             $amount = trim( $amount );
+            
+            $id = trim( $id );
+            $class = trim( $class );
 
             $return_url = ( $return_url ) ? $return_url : K_SITE_URL . $PAGE->link;
             $cancel_url = ( $cancel_url ) ? $cancel_url : $return_url;
@@ -72,12 +77,16 @@
             $html .= '<input type="hidden" name="cancel_return" value="'.$cancel_url.'"/>';
             $html .= '<input type="hidden" value="'.$notify_url.'" name="notify_url"/>';
             if( $css[1] ){
-                $html .= '<input type="submit" class="pp_submit_btn" value="'.trim( $css[1] ).'"/>';
+                $html .= '<input type="submit" name="submit" value="'.trim( $css[1] ).'"';
             }
             else{
                 $html .= '<input type="image" border="0" alt="Make payments with PayPal - it\'s fast, free and secure!"';
-                $html .= ' name="submit" src="'.$image_src.'"/>';
+                $html .= ' name="submit" src="'.$image_src.'"';
             }
+            if( $id != '' ) $html .= ' id="'.$id.'"';
+            if( $class != '' ) $html .= ' class="'.$class.'"';
+            $html .= '/>';
+
             $html .= '<img width="1" height="1" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt=""/>';
             $html .= '</form>';
 
