@@ -76,7 +76,7 @@
             }
             return true;
         }
-
+        
     }
 
     class HTML5InputEmail extends HTML5InputTypes{
@@ -125,12 +125,17 @@
         
         function validate(){
             global $FUNCS;
+            require('lang/EN.php');
+            if( K_ADMIN_LANG != 'EN' && file_exists(K_COUCH_DIR . 'addons/html5-input-types/lang/' . K_ADMIN_LANG . '.php') ){
+            require('lang/'.K_ADMIN_LANG.'.php');
+            }
+            
             if ( $this->validate != '0' ){            
                 $value = $this->get_data();
                 $pattern = '/^#([A-Fa-f0-9]{6})$/';
                 
                 if ( !preg_match( $pattern, $value ) ){
-                    $this->err_msg = 'Not a valid hexadecimal color value.';
+                    $this->err_msg = $color_error;
                     return false;
                 }
             }
@@ -179,6 +184,10 @@
 
         function validate(){
             global $FUNCS;
+            require('lang/EN.php');
+            if( K_ADMIN_LANG != 'EN' && file_exists(K_COUCH_DIR . 'addons/html5-input-types/lang/' . K_ADMIN_LANG . '.php') ){
+            require('lang/'.K_ADMIN_LANG.'.php');
+            }
 
             if( $this->is_empty() ){
                 return parent::validate(); // will handle 'required'
@@ -191,17 +200,17 @@
 
                 //Is it a number?
                 if( !is_numeric($value) ){
-                    $this->err_msg = 'Not a number';
+                    $this->err_msg = $number_error;
                     return false;
                 }
 
                 //Is it in range?
                 if( $this->min != '' && $value < $this->min ){
-                    $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.' ;
+                    $this->err_msg = $out_of_range_min_error . $this->min . '.' ;
                     return false;
                 }
                 if( $this->max != '' && $value > $this->max ){
-                    $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.' ;
+                    $this->err_msg = $out_of_range_min_error . $this->max . '.' ;
                     return false;
                 }
 
@@ -227,10 +236,10 @@
                             $higher = null;
                         }
                         if( !is_null($higher) ){
-                            $this->err_msg = 'Not a valid number. The two nearest valid numbers are '.$lower.' and '.$higher.'.';
+                            $this->err_msg = $number_step_error . $lower . $and . $higher . '.';
                         }
                         else{
-                            $this->err_msg = 'Not a valid number. The nearest valid number is '.$lower.'.';
+                            $this->err_msg =  $number_step_edge_error . $lower . '.';
                         }
                         return false;
                     }
@@ -296,6 +305,10 @@
 
         function validate(){
             global $FUNCS;
+            require('lang/EN.php');
+            if( K_ADMIN_LANG != 'EN' && file_exists(K_COUCH_DIR . 'addons/html5-input-types/lang/' . K_ADMIN_LANG . '.php') ){
+            require('lang/'.K_ADMIN_LANG.'.php');
+            }
 
             if( $this->is_empty() ){
                 return parent::validate(); // will handle 'required'
@@ -307,17 +320,17 @@
                 $pattern = '/^(\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/';
                 $date = explode('-', $value);
                 if ( !preg_match( $pattern, $value ) || !checkdate($date[1], $date[2], $date[0]) ){
-                    $this->err_msg = 'Not a valid date.';
+                    $this->err_msg = $date_error;
                     return false;
                 }
                                                           
                 //Is it in range?
                 if ( $this->min !='' && $value < $this->min ){
-                    $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.' ;
+                    $this->err_msg = $out_of_range_min_error . $this->min . '.' ;
                     return false;
                 }
                 if ( $this->max && $value > $this->max ){
-                    $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.' ;
+                    $this->err_msg = $out_of_range_max_error . $this->max . '.' ;
                     return false;
                 }
                 
@@ -349,11 +362,11 @@
                         }
                     
                         if( !is_null($lower) && !is_null($higher) ){
-                            $this->err_msg = 'Not a valid date. The two nearest valid dates are '.$lower.' and '.$higher.'.';
+                            $this->err_msg = $date_step_error . $lower . $and . $higher . '.';
                         }
                         else{
                             $valid_value = ( !is_null($lower) ) ? $lower : $higher;
-                            $this->err_msg = 'Not a valid date. The nearest valid date is '.$valid_value.'.';
+                            $this->err_msg = $date_step_edge_error . $valid_value . '.';
                         }
                         return false;
                     }
@@ -416,6 +429,10 @@
 
         function validate(){
             global $FUNCS;
+            require('lang/EN.php');
+            if( K_ADMIN_LANG != 'EN' && file_exists(K_COUCH_DIR . 'addons/html5-input-types/lang/' . K_ADMIN_LANG . '.php') ){
+            require('lang/'.K_ADMIN_LANG.'.php');
+            }
 
             if( $this->is_empty() ){
                 return parent::validate(); // will handle 'required'
@@ -425,7 +442,7 @@
                 $value = $this->get_data();
                 $pattern = '/^(([0-1][0-9])|([2][0-3])):([0-5][0-9])(:([0-5][0-9])(.([0-9]?[0-9]?[0-9]))?)?$/';
                 if ( !preg_match( $pattern, $value ) ){
-                    $this->err_msg = 'Not a valid time.';
+                    $this->err_msg = $time_error;
                     return false;
                 }
                                         
@@ -444,11 +461,11 @@
                 if ( $max_ms[1] ) $max = $max.'.'.$max_ms[1];
                                         
                 if ( $min !='' && $time < $min ){
-                    $this->err_msg = 'Out of range. Minimum value is '.$this->min.'.';
+                    $this->err_msg = $out_of_range_min_error . $this->min . '.';
                     return false;
                 }
                 if ( $max !='' && $time > $max ){
-                    $this->err_msg = 'Out of range. Maximum value is '.$this->max.'.';
+                    $this->err_msg = $out_of_range_max_error . $this->max . '.';
                     return false;
                 }
                 
@@ -502,11 +519,11 @@
                         }
                     
                         if( !is_null($lower) && !is_null($higher) ){
-                            $this->err_msg = 'Not a valid time. The two nearest valid times are '.$lower.' and '.$higher.'.';
+                            $this->err_msg = $time_step_error . $lower . $and . $higher . '.';
                         }
                         else{
                             $valid_value = ( !is_null($lower) ) ? $lower : $higher;
-                            $this->err_msg = 'Not a valid time. The nearest valid time is '.$valid_value.'.';
+                            $this->err_msg = $time_step_edge_error . $valid_value . '.';
                         }
                         return false;
                     }  
