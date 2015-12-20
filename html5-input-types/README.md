@@ -16,7 +16,7 @@ Once the add-on is activated, you can use these types just like you would any of
 
 This add-on also provides support for the HTML5 "required" attribute - but only for these input types - by including the "required" attribute in the rendered tag for browser-based HTML5 validation. 
 
-The add-on not only renders the input tags, but also adds automatic server-side validation to back up the native browser validation. Couch will generate the same errors that you would expect from browser validation.
+The add-on not only renders the input tags, but also adds automatic server-side validation to back up the native browser validation. Couch will generate the same errors that you would expect from browser validation. Error messages can be modified in the language files for customization and localization.
 
 Since automatic validation can sometimes interfere with what you want to accomplish, it can be disabled by setting the parameter `validate='0'` on any of these input types. The parameter `validate='0'` will turn off automatic validation for the tag but won't affect any other Couch validation that is present. For example, the following line won't validate the email address, but the input will still be required:
 
