@@ -18,6 +18,6 @@ $date_error = "Pas un date valide.";
 $date_step_error = "Pas un date valide. Les dates valides les plus proches sont ";//lower and higher
 $date_step_edge_error = 'Pas un date valide. Le date valide le plus proche est ';//lower or higher
 
-$time_error = "Pas une heure valide.";
-$time_step_error = "Pas une heure valide. Les heures valides les plus proches sont ";//lower and higher
-$time_step_edge_error = "Pas une heure valide. L'heure valide le plus proche est ";//lower or higher
+$time_error = "Pas un temps valide.";
+$time_step_error = "Pas un temps valide. Les temps valides les plus proches sont ";//lower and higher
+$time_step_edge_error = "Pas un temps valide. Le temps valide la plus proche est ";//lower or higher
