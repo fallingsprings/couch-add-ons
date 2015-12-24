@@ -10,7 +10,7 @@ To restore a database backup, visit site.com/couch/database/restore.php in your 
 
 ###Sync
 To sync your live site to your local machine, take a backup and download it. Place the downloaded file in the couch/database/backups folder of your local installation. Use the 
-restore tool to update the local database.
+restore tool to update the local database to the downloaded backup.
 
 This will sync the database, but uploaded files and images will need to be synced using ftp.
 

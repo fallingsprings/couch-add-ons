@@ -40,8 +40,6 @@
             exec($command);
             echo '<p>Database restored from '.$path.'/'. $_POST["backup"].'</p>';
         }else{
-            echo '<p>Error: can\'t find '. $_POST["backup"].' ???</p>';
+            echo '<p>Error: can\'t find the file '. $_POST["backup"].'</p>';
         }
     }
-
-//  /Applications/MAMP/Library/bin/

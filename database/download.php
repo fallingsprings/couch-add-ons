@@ -23,3 +23,4 @@
     header( "Content-Disposition: attachment; filename=".K_DB_NAME."_".$now.".sql" );
     //create download
     passthru( $command );
+    exit();

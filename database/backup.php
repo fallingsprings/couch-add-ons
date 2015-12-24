@@ -24,7 +24,4 @@
         echo '<form method="post" action="download.php" onsubmit="if( !confirm(\'download file?\') ){return false;}">';
         echo '<input type="submit" name="download" value="Download a Copy?">';
         echo '</form>';
-    }    
-
-
-//  /Applications/MAMP/Library/bin/
+    }
