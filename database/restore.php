@@ -15,19 +15,24 @@
     header( 'Content-Type: text/html; charset='.K_CHARSET );
     $path = str_replace( '\\', '/', dirname(realpath(__FILE__)) ).'/backups/';
     $files = scandir($path, 1);
-    $command = 'mysql -h '.K_DB_HOST.' -u '.K_DB_USER.' -p'.K_DB_PASSWORD.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
-//    $command = '/Applications/MAMP/Library/bin/mysql -h '.K_DB_HOST.' -u '.K_DB_USER.' -p'.K_DB_PASSWORD.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
+    $command = 'mysql  --user='.K_DB_USER.' --password='.K_DB_PASSWORD.' --host='.K_DB_HOST.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
+//    $command = '/Applications/MAMP/Library/bin/mysql --user='.K_DB_USER.' --password='.K_DB_PASSWORD.' --host='.K_DB_HOST.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
 
     echo '<center style="padding-top:10%;">';
-    if( !$files['0'] ){
-        echo '<p>No backup files available. Use backup.php to create a database backup.</p>';
+    foreach($files as $value){
+        $count = (preg_match('~.sql$~', $value)) ? 1 : $count;
+        if ( $count ) break;
+    }
+    if( $count != 1 ){
+        echo '<p>No backup files available. Use <a href="backup.php" style="color:blue;">backup.php</a> to create a database backup.</p>';
     }else{
+        
         if( !isset($_POST['backup']) ){
             echo '<p>Your current database will be erased and replaced with the one you choose.<br/>';
             echo 'Be sure you have a good backup before proceeding.<br/>';
             
             echo '<form method="post" action="" onsubmit="if( !confirm(\'restore database?\') ){return false;}">';
-            echo '<select name="backup" style="font-size:1em; height:2em;">';
+            echo '<select name="backup" style="font-size:1em; height:2em; padding-right:.5em;">';
             foreach($files as $value){
                 if (preg_match('~.sql$~', $value)){
                     echo '<option value="'.$value.'">'.$value.'</option>';
