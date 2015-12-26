@@ -3,6 +3,9 @@ This is a simple utility that provides basic tools for backing up and restoring 
 
 To install it, download and unzip the attached file. Place the entire "database" folder in your couch folder.
 
+##Back up
+To create a database backup, visit site.com/couch/database/backup.php in your browser while logged in as an admin. Hit the button to create a backup of the site's database. A backup will be save to couch/database/backups, and you will have the option to download a copy.
+
 ##Restore
 To restore a database backup, visit site.com/couch/database/restore.php in your browser while logged in as an admin. Select one of the backup files from the dropdown list (the most recent should be listed first) and hit the button. This erases your database and installs the selected one. Be sure you have a good backup before continuing.
 
