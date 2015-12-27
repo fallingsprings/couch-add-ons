@@ -14,17 +14,20 @@
 
     header( 'Content-Type: text/html; charset='.K_CHARSET );
     $path = str_replace( '\\', '/', dirname(realpath(__FILE__)) ).'/backups/';
-    $files = scandir($path, 1);
-    $command = 'mysql  --user='.K_DB_USER.' --password='.K_DB_PASSWORD.' --host='.K_DB_HOST.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
-//    $command = '/Applications/MAMP/Library/bin/mysql --user='.K_DB_USER.' --password='.K_DB_PASSWORD.' --host='.K_DB_HOST.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
+    if( !is_dir( $path ) ){
+        die( 'Could not find backup folder at '.$path );
+    }
 
+    $files = scandir($path, 1);
+
+    echo '<a href="index.php"><< BACK</a>';
     echo '<center style="padding-top:10%;">';
     foreach($files as $value){
         $count = (preg_match('~.sql$~', $value)) ? 1 : $count;
         if ( $count ) break;
     }
     if( $count != 1 ){
-        echo '<p>No backup files available. Use <a href="backup.php" style="color:blue;">backup.php</a> to create a database backup.</p>';
+        echo '<p>No backup files available. Use <a href="backup.php" style="color:blue;">backup.php</a> to create database backups.</p>';
     }else{
         
         if( !isset($_POST['backup']) ){
@@ -46,7 +49,9 @@
 
     if( isset($_POST['backup']) ){
         if( file_exists($path .'/'. $_POST['backup'])){
-            exec($command);
+            $command = 'mysql  --user='.K_DB_USER.' --password='.K_DB_PASSWORD.' --host='.K_DB_HOST.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
+//            $command = '/Applications/MAMP/Library/bin/mysql --user='.K_DB_USER.' --password='.K_DB_PASSWORD.' --host='.K_DB_HOST.' '.K_DB_NAME.' < '.$path . $_POST['backup'];
+           exec($command);
             echo '<p>Database restored from '.$path . $_POST["backup"].'</p>';
         }else{
             echo '<p>Error: can\'t find the file \''. $_POST["backup"].'\'</p>';
@@ -54,8 +59,8 @@
     }
     echo '</center>';
 
-//  For trouble with MAMP servers on OSX replace line 11 with:
+//  For trouble with MAMP servers on OSX replace line 12 with:
 //  exec('/Applications/MAMP/Library/bin/mysql', $return, $test);
 
-//  and line 17 with:
+//  and line 52 with:
 //  $command = '/Applications/MAMP/Library/bin/mysql -h '.K_DB_HOST.' -u '.K_DB_USER.' -p'.K_DB_PASSWORD.' '.K_DB_NAME.' < '.$path . $_POST['backup'];

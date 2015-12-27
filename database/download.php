@@ -26,7 +26,7 @@
     passthru( $command );
     exit();
 
-//  For trouble with MAMP servers on OSX replace line 11 with:
+//  For trouble with MAMP servers on OSX replace line 12 with:
 //  exec('/Applications/MAMP/Library/bin/mysqldump', $return, $test);
 
 //  and line 16 with:

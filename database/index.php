@@ -7,10 +7,27 @@
 
     define( 'K_ADMIN', 1 );
     if( $AUTH->user->access_level < K_ACCESS_LEVEL_ADMIN ) die( 'Please login as admin.' );
-
 php?>
-<html><body>
-<center style="padding-top:10%;"><p><a style="font-size:1em; height:2em; color:blue;" href="backup.php">Create a Backup</a></p>
-<p><a style="font-size:1em; height:2em; color:blue;" href="restore.php">Restore a Backup</a></p>
-</center>
-</body></html>
+
+    <center style="padding-top:10%;">
+        <form method="post" action="backup.php">
+            <input type="submit" name="submit" value="Create a Backup" style="font-size:1em; height:2em;margin-bottom:2em;"/>
+        </form>
+        
+        <form method="post" action="restore.php">
+            <input type="submit" name="submit" value="Restore a Backup" style="font-size:1em; height:2em;margin-bottom:2em;"/>
+        </form>   
+
+        <form method="post" action="download.php" onsubmit="if(!confirm('download file?')){return false;}else{success();}">
+            <input type="submit" name="download" value="Download a Backup" style="font-size:1em; height:2em;"/>
+        </form>
+    </center>
+
+<script type="text/javascript">
+    function success(){
+        var message = document.createElement('p');
+        message.innerHTML = 'Backup Downloaded. Check your downloads folder.';
+        var button = document.getElementsByTagName('input');
+        button[2].parentNode.replaceChild(message, button[2]);
+    }       
+</script>
