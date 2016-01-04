@@ -12,18 +12,13 @@ To create a database backup, hit the "Create a Backup" button. A backup will be 
 ##Restore
 To restore a database backup, hit the "Restore a Backup" button. Select one of the backup files from the dropdown list (the most recent should be listed first) and hit the restore button. This erases your database and installs the selected one. Be sure you have a good backup before continuing.
 
-##Download
-The "Download a Backup" button can be used to just grab a backup file, or you can get a download while creating a backup on the server.
-
 ##Sync
 To sync between a live site and your local copy, simply take a backup from one and restore it to the other.
 
 ##Caveats
 As with any database operation, be sure you have a good backup before proceeding with the restore operation.
 
-This utility backs up and restores the entire database, not just the Couch tables. If your site has a database to itself, like most sites, then that's probably a good thing. But if your site shares a database - for example by using prefixes to install multiple Couch instances on the same database - it could cause issues.
+This utility backs up and restores the entire database, not just the Couch tables. If your site has a database to itself, like most sites, then that's a good thing. But if your site shares a database - for example by using prefixes to install multiple Couch instances on the same database - it could cause issues.
 
 ##System Paths
-The functions used by this utility for backing up and restoring the database are system commands, not PHP functions. The path to these system commands can change depending on your system and server configuration. This utility does its best to automatically determine the correct path, but if the utility throws errors or creates 0 byte files, you will have to discover and configure the paths manually.
-
-Open the database/config.php file, comment out the automatic path function, and add the path to the 'mysql' and 'mysqldump' commands for your own system.
+The functions used by this utility for backing up and restoring the database are system commands, not PHP functions. The path to these system commands can change depending on your system and server configuration. This utility does its best to automatically determine the correct path, but if the utility throws errors or creates 0 byte files, you will have to discover and configure the paths manually in the couch/database/config.php file.

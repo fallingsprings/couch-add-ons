@@ -11,7 +11,6 @@
     if( $test == '127' ) die('Check your path name configuration. PHP cannot access the "mysqldump" function. Cannot create backup file.');
     if( $test != '0' && $test != '1' ) die('Unknown error. Cannot create backup file. Error Code: '.$test);
             
-    $path = str_replace( '\\', '/', dirname(realpath(__FILE__) )).'/backups/';
     if( !is_dir( $path ) ){
         //create folder
         mkdir( $path );
@@ -48,7 +47,7 @@ $script = <<< HERE
 <script type="text/javascript">
     function message(){
         var message = document.createElement('p');
-        message.innerHTML = 'download Started. Check your downloads folder.';
+        message.innerHTML = 'Download started. Check your downloads folder.';
         var button = document.getElementsByTagName('input');
         button[0].parentNode.replaceChild(message, button[0]);
     }       

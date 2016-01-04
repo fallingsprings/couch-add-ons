@@ -16,6 +16,12 @@ echo $environment[0];
     if( $test == '127' ) echo 'Configure path name for mysqldump. Cannot create backup files.<br/>';
     if( $test != '126' && $test != '127' && $test != '0' && $test != '1' ) echo 'Unknown error. Cannot create backup files. Error Code: '.$test.'<br/>';
 
+    if( isset($_POST['cron']) ){
+        echo '<p>You can easily set up automatic actions from the Cron Jobs tab in your CPanel. Use the command below to create a cron job for scheduling automatic backups. Unfortunately, this may not work for every host. Check with your host for instructions and troubleshooting.</p><pre>php -q '.$path.'cron_backup.php</pre>';
+    } 
+        
+
+
 php?>
 
     <center style="padding-top:10%;">
@@ -30,9 +36,9 @@ php?>
         <form method="post" action="download.php" onsubmit="if(!confirm('download file?')){return false;}else{success();}">
             <input type="submit" name="submit" value="Download a Backup" style="font-size:1em; height:2em; margin-bottom:2em;"/>
         </form>
-
-        <form method="post" action="manage.php">
-            <input type="submit" name="submit" value="Manage Files" style="font-size:1em; height:2em;"/>
+        
+        <form method="post" action="file_manager.php">
+            <input type="submit" name="submit" value="Manage Files" style="font-size:1em; height:2em; margin-bottom:2em;"/>
         </form>
     </center>
 

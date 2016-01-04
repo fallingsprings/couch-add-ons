@@ -12,7 +12,6 @@
     if( $test != '0' && $test != '1' ) die('Unknown error. Cannot restore backup file. Error Code: '.$test);
             
     header( 'Content-Type: text/html; charset='.K_CHARSET );
-    $path = str_replace( '\\', '/', dirname(realpath(__FILE__)) ).'/backups/';
     if( !is_dir( $path ) ){
         die( 'Could not find backup folder at '.$path );
     }
