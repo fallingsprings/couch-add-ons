@@ -143,10 +143,12 @@ echo $table;
     echo '</table>';
 
     $trash = $path.'trash';
-    $files = array_diff(scandir($trash), array('.','..'));
-    foreach ($files as $file) {
-        echo '<form method="post" action=""><input type="submit" name="empty_trash" value="Empty Trash" style="font-size:1em; height:2em; margin-top:2em;"/><input type="hidden" name="nonce" value="'.$FUNCS->create_nonce( $file ).'"/></form>';
-        break;
+    if( is_dir( $path.'trash/' ) ){
+        $files = array_diff(scandir($trash), array('.','..'));
+        foreach ($files as $file) {
+            echo '<form method="post" action=""><input type="submit" name="empty_trash" value="Empty Trash" style="font-size:1em; height:2em; margin-top:2em;"/><input type="hidden" name="nonce" value="'.$FUNCS->create_nonce( $file ).'"/></form>';
+            break;
+        }
     }
 
 $script = <<< HERE
