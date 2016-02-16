@@ -7,7 +7,7 @@
 
     $path = str_replace( '\\', '/', dirname(realpath(__FILE__)) ).'/backups/';
     if( !is_dir( $path ) ){
-        die( 'Could not find backup folder at '.$path );
+        die( 'Error: Could not find backup folder at ' . $path );
     }
 
     //DOWNLOAD
@@ -17,66 +17,67 @@
         header( "Expires: Fri, 01 Jan 1990 00:00:00 GMT" );
         header( "Cache-Control: must-revalidate, post-check=0, pre-check=0" );
         header( "Pragma: no-cache" );
-        header('Content-Disposition: attachment; filename="'.$_POST['download'].'"');        //create download
-        readfile( $path.$_POST['download'] );
+        header("Content-Disposition: attachment; filename=" . $_POST['download']);        //create download
+        readfile( $path . $_POST['download'] );
         exit();
+        
     }
 
-    header( 'Content-Type: text/html; charset='.K_CHARSET );
+    header( 'Content-Type: text/html; charset=' . K_CHARSET );
 
-    echo '<a href="index.php"><< BACK</a>';
+    echo '<a href="./"><< BACK</a>';
     echo '<center style="padding-top:3%;">';
 
     //DELETE
     if( isset($_POST['delete']) ){
         $FUNCS->validate_nonce( $_POST['delete'], $_POST['nonce'] );
-        if( !is_dir( $path.'trash/' ) ){
+        if( !is_dir( $path . 'trash/' ) ){
             //create trash folder if necessary
-            mkdir( $path.'trash/' );
+            mkdir( $path . 'trash/' );
         }
 
-        rename($path.$_POST['delete'], $path.'trash/'.$_POST['delete']);
-        echo $_POST['delete'].' moved to trash.';
-        echo '<form method="post" action=""><input type="hidden" name="restore" value="'.$_POST["delete"].'"/><input type="submit" value="Restore?" style="font-size:1em; height:2em; margin-bottom:2em; margin-top:.5em;"/></form>';
+        rename($path . $_POST['delete'], $path . 'trash/' . $_POST['delete']);
+        echo $_POST['delete'] . ' moved to trash.';
+        echo '<form method="post" action=""><input type="hidden" name="restore" value="' . $_POST["delete"] . '"/><input type="submit" value="Restore?" style="font-size:1em; height:2em; margin-bottom:2em; margin-top:.5em;"/></form>';
     }
 
     //UN-TRASH FILE
     if( isset($_POST['restore']) ){
-        if( !file_exists($path.'trash/'.$_POST['restore'])){
-            die('ERROR:'.$path.'trash/'.$_POST['restore'].' is missing.');
+        if( !file_exists($path . 'trash/' . $_POST['restore'])){
+            die('ERROR:' . $path . 'trash/' . $_POST['restore'] . ' is missing.');
         }
-        rename($path.'trash/'.$_POST['restore'], $path.$_POST['restore']);
-        echo $_POST['restore'].' was returned from the trash.';
+        rename($path.'trash/' . $_POST['restore'], $path . $_POST['restore']);
+        echo $_POST['restore'] . ' was returned from the trash.';
     }
 
     //RENAME
     if( isset($_POST['rename_to']) ){
         $FUNCS->validate_nonce( $_POST['rename_from'], $_POST['nonce'] );
-        if( !file_exists($path.$_POST['rename_from'])){
-            die('ERROR:'.$path.$_POST['rename_from'].' is missing.');
+        if( !file_exists($path . $_POST['rename_from'])){
+            die('ERROR:' . $path . $_POST['rename_from'] . ' is missing.');
         }
-        if( !file_exists($path.$_POST['rename_to']) ){
+        if( !file_exists($path . $_POST['rename_to']) ){
             // Sanitize new file name
             $new_name = trim($_POST['rename_to']);
-            $new_name = ( preg_match('~.sql$~', $new_name) ) ? $new_name : $new_name.'.sql';
+            $new_name = ( preg_match('~.sql$~', $new_name) ) ? $new_name : $new_name . '.sql';
             $new_name = preg_replace('/[^A-Za-z0-9\-.()]/', '_', $new_name);
             // Remove any runs of periods
             $new_name = preg_replace("([\.]{2,})", '_', $new_name);
             
-            rename($path.$_POST['rename_from'], $path.$new_name);
-            echo $_POST['rename_from'].' renamed to '.$new_name;
+            rename($path . $_POST['rename_from'], $path . $new_name);
+            echo $_POST['rename_from'].' renamed to ' . $new_name;
         }else{
             if( $_POST['rename_to'] == '' ){
-                echo 'You must enter a filename.';
+                echo 'ERROR: You must enter a filename.';
             }else{
-            echo $_POST['rename_to'].' already exists.';
+            echo $_POST['rename_to'] . ' already exists.';
             }
         }
     }
 
     //EMPTY TRASH
     if( isset($_POST['empty_trash']) ){
-        $trash = $path.'trash';
+        $trash = $path . 'trash';
         $files = array_diff(scandir($trash), array('.','..'));
         foreach ($files as $file) {
             $FUNCS->validate_nonce( $file, $_POST['nonce'] );
@@ -142,11 +143,11 @@ echo $table;
     }
     echo '</table>';
 
-    $trash = $path.'trash';
-    if( is_dir( $path.'trash/' ) ){
+    $trash = $path . 'trash';
+    if( is_dir( $path . 'trash/' ) ){
         $files = array_diff(scandir($trash), array('.','..'));
         foreach ($files as $file) {
-            echo '<form method="post" action=""><input type="submit" name="empty_trash" value="Empty Trash" style="font-size:1em; height:2em; margin-top:2em;"/><input type="hidden" name="nonce" value="'.$FUNCS->create_nonce( $file ).'"/></form>';
+            echo '<form method="post" action=""><input type="submit" name="empty_trash" value="Empty Trash" style="font-size:1em; height:2em; margin-top:2em;"/><input type="hidden" name="nonce" value="' . $FUNCS->create_nonce( $file ) . '"/></form>';
             break;
         }
     }

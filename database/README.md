@@ -6,8 +6,11 @@ To install it, download and unzip the attached file. Place the entire "database"
 ##Quick Start
 Go to site.com/couch/database/ while logged in as an admin. Push the buttons.
 
-##Back up
+##Backup
 To create a database backup, hit the "Create a Backup" button. A backup will be save to couch/database/backups.
+
+##Download
+The "Download a Backup" button can be used to just grab a current backup file. Use the File Manager to download a previously saved backup.
 
 ##Restore
 To restore a database backup, select one of the backup files from the dropdown list and hit the restore button. This erases your database and installs the selected one. Be sure you have a good backup before continuing.

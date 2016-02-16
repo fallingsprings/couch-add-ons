@@ -2,19 +2,15 @@
     //Path to Backup Folder
     $path = str_replace( '\\', '/', dirname(realpath(__FILE__) )).'/backups/';    
 
-    //Path to mysql system commands
-    $mysql_path = mysql_query( "SHOW VARIABLES LIKE 'basedir'" );
-    $mysql_path = mysql_fetch_array($mysql_path);
-    $environment = explode('\\', $mysql_path[1]);
+    // Explicitly define the full path to mysql files if automatic discovery fails (make sure add the trailing slash)
+    //define( 'K_MYSQL_PATH', '' );
+    //define( 'K_MYSQL_PATH', 'E:/one one/' );
 
-    if ( !$environment[1] ){
-        define( 'MYSQL_PATH', $mysql_path[1].'/bin/' );
-    }else{
-        define( 'MYSQL_PATH', $mysql_path[1].'\bin\\' );
+    // try to figure out path of MySQL executables
+    if ( !defined('K_MYSQL_PATH') ){
+        $rs = $DB->raw_select( "SHOW VARIABLES LIKE 'basedir'" );
+        if( count($rs) ){
+            $mysql_path = rtrim( str_replace('\\', '/', $rs[0]['Value']), '/' ) . '/bin/';
+            define( 'K_MYSQL_PATH', $mysql_path );
+        }
     }
-
-// Explicitly define the full path to
-// mysql system commands here
-// if automatic discovery fails.
-
-    //define( 'MYSQL_PATH', '' );
