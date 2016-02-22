@@ -27,4 +27,6 @@ As with any database operation, be sure you have a good backup before proceeding
 This utility backs up and restores the entire database, not just the Couch tables. If your site has a database to itself, like most sites, then that's a good thing. But if your site shares a database - for example by using prefixes to install multiple Couch instances on the same database - it could cause conflicts.
 
 ##System Paths
-The functions used by this utility for backing up and restoring the database are system commands, not PHP functions. The path to these system commands is different depending on your system and server configuration. This utility does its best to automatically determine the correct path, but if the utility throws errors or creates 0 byte files, you will have to discover and configure the paths manually in the couch/database/config.php file.
+The functions used by this utility for backing up and restoring the database are system commands (like you would type into a terminal), not PHP functions. The path to these system commands is different depending on your system and server configuration. This utility does its best to automatically determine the correct path, but if the utility throws errors or creates 0 byte files, you will can configure the paths manually in the couch/database/config.php file.
+
+Some hosts may not allow PHP to access the system commands for security purposes. If that's the case, then this utility simply won't work.
