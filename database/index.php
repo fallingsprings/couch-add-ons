@@ -112,7 +112,7 @@ $actions = <<< HERE
     <center style="padding-top:10%;">
         $message
         <form method="post" action="">
-            <input type="submit" name="submit" value="Create a Backup" style="font-size:1em; height:2em; margin-bottom:2em;"/>
+            <input type="submit" name="submit" value="Save a Backup" style="font-size:1em; height:2em; margin-bottom:2em;"/>
             <input type="hidden" name="backup" value="$now"/>   
             <input type="hidden" name="nonce" value="$nonce"/>   
         </form>
@@ -126,6 +126,10 @@ $actions = <<< HERE
         <form method="post" action="restore.php">
             <input type="submit" name="submit" value="Restore a Backup" style="font-size:1em; height:2em; margin-bottom:2em;"/>
         </form>   
+
+        <form method="post" action="cron_config.php">
+            <input type="submit" name="submit" value="Configure a Cron Job" style="font-size:1em; height:2em; margin-bottom:2em;"/>
+        </form>
 
         <form method="post" action="file_manager.php">
             <input type="submit" name="submit" value="Manage Files" style="font-size:1em; height:2em; margin-bottom:2em;"/>
