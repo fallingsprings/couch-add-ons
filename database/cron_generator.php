@@ -10,9 +10,15 @@
     header( "Content-Type: application/octet-stream" );
     header( "Content-Disposition: attachment; filename=backup_db.php" );
 
-
     $path .= K_DB_NAME . '_';
-    $command = "\$command='" . K_MYSQL_PATH  . "mysqldump > " . $path . "'.\$now.'.sql';";
+    $command = "\$command='" . K_MYSQL_PATH  . "mysqldump";
+    $command .= ' --user=' . K_DB_USER;
+    $db_host = array_map( "trim", explode(':', K_DB_HOST) );
+    $command .= ' --host=' . $db_host[0];
+    if( strlen($db_host[1]) ){
+        $command .= ' --port=' . $db_host[1];
+    }
+    $command .= ' ' . K_DB_NAME . " > " . $path . "'.\$now.'.sql';";
     
     echo '<';
     echo "?php\n";

@@ -4,14 +4,13 @@
 
     define( 'K_ADMIN', 1 );
     if( $AUTH->user->access_level < K_ACCESS_LEVEL_ADMIN ) die( 'Please login as admin.' );
-    require('config.php');
 
     $command = 'php -q ';
-    $command .= $path . 'cron_backup.php';
+    $command .= str_replace( '\\', '/', dirname(realpath(__FILE__) )) . '/cron_backup.php';
 
     echo '<a href="./"><< BACK</a>';
 
-    echo '<p>Use the following command to set up a Cron Job.</p>';
+    echo '<p>Use the following command to set up a Cron Job in your cPanel.</p>';
 
     echo '<pre>' . $command . '</pre>';
 
