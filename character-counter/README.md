@@ -48,12 +48,19 @@ Additional parameters are detailed below. Here's an example of a counter that's 
     
 ### Parameters:
 **repeatable:** name of the repeatable region
+
 **editable:** name of the editable region
+
 **max:** maximum desired character count
+
 **min:** minimum desired character count
+
 The character counter will turn red when the count is out of range. But the max and min parameters don't place any actual limits on what can be entered.
+
 **type:** either 'up' or 'down'. When the 'max' parameter is set, the default is a countdown counter. You can't use a countdown type without setting the 'max' parameter.
+
 **show:** an option to show the max and/or min count along with the counter. valid options are 'max', 'min', min max', or 'both'.
+
 **label:** applies a text label to the counter. Pro-tip: use html to dress up your label, i.e.: 
 
     label:'<strong style="color:purple;">Character Count:</strong>'
@@ -63,6 +70,8 @@ The character counter will turn red when the count is out of range. But the max 
 To use this tag, unzip and add the folder to your couch/addons directory. Initiate the tag in couch/addons/k_functions.php:
 
     require_once( K_COUCH_DIR.'addons/character-counter/character-counter.php' );
+
+###Older Versions of Couch
 
 This tag takes advantage of new Admin Panel features, and won't work for Couch versions below 2.0. However, the script itself will work with older versions. The method of implementing it is a little different though.
 
