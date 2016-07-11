@@ -45,9 +45,9 @@ function initRepeatable(my_counter) {
         target = document.getElementById(field_name);
 
         //break the loop when there are no more
-        if(target == null) break; 
+        if(target == null) { break; }
         //skip it if it's already there (when adding rows to a repeatable)
-        if ( document.getElementById(field_name + '_counter') != null ) continue;
+        if ( document.getElementById(field_name + '_counter') != null ) { continue; }
                 
         //add a character counter beneath the field  
         var counter = document.createElement('p');
@@ -66,10 +66,11 @@ function sanitizeParameters(my_counter) {
     my_counter.max = (!my_counter.max) ? '' : parseInt(my_counter.max);
     my_counter.min = (!my_counter.min) ? '' : parseInt(my_counter.min);
     my_counter.count = (!my_counter.count) ? '' : my_counter.count.trim().toLowerCase();
+    my_counter.type = (!my_counter.type) ? '' : my_counter.type.trim().toLowerCase();
     my_counter.show = (!my_counter.show) ? '' : my_counter.show.trim().toLowerCase();
     my_counter.label = (!my_counter.label) ? '' : my_counter.label;
     //can't count down from nothing
-    if(!my_counter.max) my_counter.count = 'up';
+    if(my_counter.max == '') { my_counter.type = 'up'; }
             
     return my_counter;
 }
@@ -97,24 +98,24 @@ function updateCounter(field_name, max, min, type, show, label) {
     //Counter styles
     if (type == 'up'){
         //count up
-        if (count > max || count < min ){
+        if ( (max && count > max) || count < min ){
             counter.children[0].style.color = 'red';
         }else{
             counter.children[0].style.color = 'green';
         }
     }else{ //count down
-        if (count < 0 || count > max - min ){
+        if ( count < min ){
             counter.children[0].style.color = 'red';
         }else{
             counter.children[0].style.color = 'green';
         }       
     }
     //Show min and/or max
-    if ( show.indexOf('min') >= 0 || show.indexOf('both') >= 0 ){
+    if ( min && (show.indexOf('min') >= 0 || show.indexOf('both') >= 0) ){
         //show min
         counter.innerHTML = 'Min: '+  min + '&nbsp;&nbsp;&nbsp;' + counter.innerHTML;
             }
-    if ( show.indexOf('max') >= 0 || show.indexOf('both') >= 0 ){
+    if ( max && (show.indexOf('max') >= 0 || show.indexOf('both') >= 0) ){
         //show max
         counter.innerHTML = counter.innerHTML + '&nbsp;&nbsp;&nbsp;Max: ' + max;
     }
