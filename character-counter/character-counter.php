@@ -8,23 +8,19 @@
         global $CTX, $FUNCS, $AUTH;
         if( $AUTH->user->access_level < K_ACCESS_LEVEL_SUPER_ADMIN ){ return; }
 
-        // get the 'config' object supplied by 'cms:config_list_view' tag or 'cms:config_form_view' tag
-        $arr_config = &$CTX->get_object( '__config', 'config_list_view' );
-        if( !is_array($arr_config) ){
-            $arr_config = &$CTX->get_object( '__config', 'config_form_view' );
-            if( !is_array($arr_config) ){ return; }
-        }
+        // get the 'config' object supplied by 'cms:config_form_view' tag
+        $arr_config = &$CTX->get_object( '__config', 'config_form_view' );
+        if( !is_array($arr_config) ){ return; }
 
         if( count($node->children) ){
             $code = $node->children;
             $counter_params = trim($code[0]->text);
             
-            //TODO:repeatable 'remove row' breaks 'add row' listener
-            //Maybe wait for expected update to repeatable regions
+            //TODO: repeatable 'remove row' breaks 'add row' listener
+            //Maybe wait for expected update to repeatable regions, though
             $script = 'var my_counters=['.$counter_params.'];';
             $script .= file_get_contents(K_ADMIN_URL . 'addons/character_counter/js/characterCounter.min.js');
-        }
-        
+        } 
         
         $code[0]->text = $script;
         
