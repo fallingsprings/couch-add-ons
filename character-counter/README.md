@@ -41,7 +41,7 @@ Additional parameters are detailed below. Here's an example of a counter that's 
             	max:159,
             	type: 'up',
             	show:'max min',
-            	label:'Character Counter:'
+            	label:'Character Count:'
         	}        
         </cms:character_counter>
     </cms:config_form_view>
