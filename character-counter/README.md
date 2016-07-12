@@ -1,7 +1,7 @@
 # Character Counter
 ## Add Character Counters to Fields in the Admin Panel
 
-This custom tag allows you to attach character counters of different kinds to any field in the Couch Admin Panel. The tag can set any number of counters with several different types available.
+This custom tag allows you to attach character counters of different kinds to any field in the Couch Admin Panel. The tag can set any number of counters with several different types available. They can be a useful tool for seo and meta tags, or anywhere the editor needs to be aware of the constraints on a text region.
 
 The tag itself is essentially a container for the javascript code that creates the counters. It is meant to be added to the new 'cms:script' tag nested inside the 'cms:config_form_view' tag. It can share the space with other custom javascript.
 
@@ -36,7 +36,7 @@ Additionally, you can choose to show the min and/or max value alongside the coun
     <cms:character_counter>
         { repeatable:'my_repeatable', editable:'my_editable' }, 
         { editable:'twitter_style', max:140 },
-        { editable:'super_fancy', min:35, max:159, type:'up', show:'both', label:'Character Count:' } 
+        { editable:'super_fancy', min:35, max:500, type:'up', show:'both', label:'Character Count:' } 
     </cms:character_counter>
 
 ###Older Versions of Couch
@@ -54,11 +54,11 @@ Older versions of Couch don't have v2.0's custom admin features, but as mentione
 
 ###On the Front End
 
-You can even use this script on the front end of your website if you happen to need a character counter on a field. Just place it inside a script tag, preferably at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter.
+You can even use this script on the front end of your website if you happen to need a character counter for a field. Just place it inside a script tag, preferably at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter.
 
     <script type="text/javascript">
         <cms:character_counter>
-        { field:'my_form_field', max:500 }
+        { field:'my_form_field', max:180 }
         </cms:character_counter>
     </script>
 
@@ -76,7 +76,7 @@ You can even use this script on the front end of your website if you happen to n
 - When the 'max' parameter is set, the default is a countdown counter.	
 - You can't use a countdown type without setting the 'max' parameter.
 	
-**show** - an option to show the max and/or min count along with the counter. Valid options include 'max', 'min', 'both', 'min max', 'max min', 'MiniMax', or 'Max has a really min cat'.
+**show** - an option to show the max and/or min count along with the counter. Valid options include 'max', 'min', 'both', 'min max', 'max min', 'MiniMax', or 'Maxine has a really min cat'.
 
 **label** - applies a text label to the counter.
 - Pro-tip: use html to dress up your label: 

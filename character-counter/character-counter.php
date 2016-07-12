@@ -4,16 +4,12 @@
     
     class CharacterCounter{
         function character_counter( $params, $node ){
+            $params = trim(preg_replace('/\s\s+/', ' ', $node->children[0]->text));
 
-            if( count($node->children) ){
-                $code = $node->children;
-                $params = trim($code[0]->text);
-            
-                $script = 'var my_counters=['.$params.'];';
-                $script .= file_get_contents(K_ADMIN_URL . 'addons/character-counter/js/characterCounter.min.js');
-            }else { return; }
+            $script = 'var my_counters=['.$params.'];';
+            $script .= file_get_contents(K_ADMIN_URL . 'addons/character-counter/js/characterCounter.min.js');
         
-        return $script;      
+            return $script;      
         }        
     }
 $FUNCS->register_tag( 'character_counter', array('CharacterCounter', 'character_counter') );
