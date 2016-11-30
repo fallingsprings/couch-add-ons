@@ -47,7 +47,7 @@ Older versions of Couch don't have v2.0's custom admin features, but as mentione
     <cms:editable name='char_counter' type='message' order="100">
     	<script type="text/javascript">
         	<cms:character_counter>
-        	{ editable:'meta_description', max:159 }
+        	   { editable:'meta_description', max:159 }
         	</cms:character_counter>
     	</script>
     </cms:editable>
@@ -58,7 +58,7 @@ You can even use this script on the front end of your website if you happen to n
 
     <script type="text/javascript">
         <cms:character_counter>
-        { field:'my_form_field', max:180 }
+            { field:'my_form_field', max:180 }
         </cms:character_counter>
     </script>
 
@@ -81,10 +81,10 @@ You can even use this script on the front end of your website if you happen to n
 **label** - applies a text label to the counter.
 - Pro-tip: use html to dress up your label: 
 
-	`{ editable:'lets-go-crazy', label:'<strong style="color:purple;">Character Count:</strong>' }`
+	{ editable:'lets-go-crazy', label:'<strong style="color:purple;">Character Count:</strong>' }
 
 ###Installing the Add-On
 
 To use this tag, unzip and add the folder to your 'couch/addons' directory. Initiate the tag in 'couch/addons/k_functions.php'.
 
-	`require_once( K_COUCH_DIR.'addons/character-counter/character-counter.php' );`
+	require_once( K_COUCH_DIR.'addons/character-counter/character-counter.php' );

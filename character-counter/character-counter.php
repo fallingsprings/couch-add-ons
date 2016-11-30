@@ -3,7 +3,7 @@
     if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
     
     class CharacterCounter{
-        function character_counter( $params, $node ){
+        static function character_counter( $params, $node ){
             $params = trim(preg_replace('/\s\s+/', ' ', $node->children[0]->text));
 
             $script = 'var my_counters=['.$params.'];';
