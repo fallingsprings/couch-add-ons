@@ -4,7 +4,7 @@
     // UDF for HTML5 Input Types
     class HTML5InputTypes extends KUserDefinedFormField{
 
-        function handle_params( $params ){
+        static function handle_params( $params ){
             global $FUNCS;
             $attr = $FUNCS->get_named_vars(
                         array(
@@ -100,7 +100,7 @@
     }
         
     class HTML5InputColor extends HTML5InputTypes{
-        function handle_params( $params ){
+        static function handle_params( $params ){
             global $FUNCS;
             
             $attr = parent::handle_params( $params );
@@ -144,7 +144,7 @@
     }
         
        class HTML5InputNumber extends HTML5InputTypes{
-        function handle_params( $params ){
+        static function handle_params( $params ){
             global $FUNCS;
 
             $attr = parent::handle_params( $params );
@@ -251,7 +251,7 @@
     }
 
     class HTML5InputRange extends HTML5InputNumber{
-        function handle_params( $params ){
+        static function handle_params( $params ){
             global $FUNCS;
 
             $attr = parent::handle_params( $params );
@@ -268,7 +268,7 @@
     }
 
     class HTML5InputDate extends HTML5InputTypes{
-        function handle_params( $params ){
+        static function handle_params( $params ){
             global $FUNCS;
 
             $attr = parent::handle_params( $params );
@@ -379,7 +379,7 @@
     }
 
     class HTML5InputTime extends HTML5InputTypes{
-        function handle_params( $params ){
+        static function handle_params( $params ){
             global $FUNCS;
 
             $attr = parent::handle_params( $params );
