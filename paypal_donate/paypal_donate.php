@@ -4,7 +4,7 @@
     
     class PayPalDonate{
         
-        function paypal_donate( $params, $node ){
+        static function paypal_donate( $params, $node ){
             global $CTX, $FUNCS, $PAGE;
             if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
 
