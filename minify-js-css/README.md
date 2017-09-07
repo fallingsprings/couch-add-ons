@@ -4,6 +4,7 @@ The minify tag will combine and minimize CSS or JS files. It concatenates and mi
     <cms:minify 'css' into='css/style.min.css'>
         css/bootstrap.min.css
         css/bootstrap-theme.min.css
+        calendar/theme/style.css
         css/custom.css
     </cms:minify>
 
@@ -11,6 +12,7 @@ The minify tag will combine and minimize CSS or JS files. It concatenates and mi
         js/jquery.min.js
         js/bootstrap.min.js
         js/bootstrap-plugin.js
+        calendar/js/script.js
         js/custom.js
     </cms:minify>
 
