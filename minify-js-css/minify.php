@@ -52,7 +52,12 @@ class MinifyJsCss{
         }
         
         //Combine files
-        foreach($files as $code){ $content .= file_get_contents($code); }
+        foreach($files as $code){ 
+            if( strtolower(substr(strrchr($code, "."), 1)) == 'php' ){
+                $code = str_replace(K_SITE_DIR, K_SITE_URL, $code);
+            }
+            $content .= file_get_contents($code);
+        }
         //load JShrink if needed
         if($filetype == 'js'){ 
             require_once( K_COUCH_DIR.'addons/minify-js-css/JShrink.php' ); 
