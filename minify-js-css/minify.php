@@ -22,15 +22,12 @@ class MinifyJsCss{
         
         //Add listed files to an array and sanitize
         if(trim($node->children[0]->text)){
-            foreach( $node->children as $child ){ 
-                $file_list .= $child->get_HTML(); 
-            }
+            // get file list
+            foreach( $node->children as $child ){ $file_list .= $child->get_HTML(); }
             //Split on whitespace and commas
             $files = preg_split('/[\s,+]/', $file_list, -1, PREG_SPLIT_NO_EMPTY);
-            //full path
-            foreach( $files as &$file ){
-                $file = K_SITE_DIR . ltrim($file, '/');
-            }
+            //trim leading forward slash
+            foreach( $files as &$file ){ $file = ltrim($file, '/'); }
         }else{
             die("ERROR: Tag \"".$node->name."\" - No files were listed.");
         }
@@ -38,7 +35,7 @@ class MinifyJsCss{
         //compare modification dates to output file
         if($output_file){
             foreach($files as $item){
-                if( filemtime($item) > filemtime($output_file) ){
+                if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
                     $modified = 1; break;
                 }
             }
@@ -52,14 +49,16 @@ class MinifyJsCss{
         }
         
         //Combine files
-        foreach($files as $code){ $content .= file_get_contents($code); }
-        //load JShrink if needed
-        if($filetype == 'js'){ 
-            require_once( K_COUCH_DIR.'addons/minify-js-css/JShrink.php' ); 
+        foreach($files as $item){ 
+            //use url to be able to interpret php
+            $content .= file_get_contents(K_SITE_URL . $item);
         }
         //minify combined files
         if ($filetype == 'css'){ $output = minify_css($content); }
-        if ($filetype == 'js'){ $output = \JShrink\Minifier::minify($content); }
+        if ($filetype == 'js'){ 
+            require_once( K_COUCH_DIR.'addons/minify-js-css/JShrink.php' ); 
+            $output = \JShrink\Minifier::minify($content); 
+        }
         
         //No output file. Embed output on page. Done.
         if(!$output_file){ 
