@@ -50,7 +50,6 @@ class MinifyJsCss{
         
         //Combine files
         foreach($files as $item){ 
-            //use url to be able to interpret php
             $content .= file_get_contents(K_SITE_URL . $item);
         }
         //minify combined files
@@ -62,12 +61,8 @@ class MinifyJsCss{
         
         //No output file. Embed output on page. Done.
         if(!$output_file){ 
-            if ($filetype == 'css'){
-                return '<style>' . $output . '</style>';
-            }
-            if ($filetype == 'js'){
-                return '<script type="text/javascript">' . $output . '</script>';
-            }
+            if ($filetype == 'css'){ return '<style>' . $output . '</style>'; }
+            if ($filetype == 'js'){ return '<script type="text/javascript">' . $output . '</script>'; }
         }
         
         //Create new output file. Render tag. Done.
