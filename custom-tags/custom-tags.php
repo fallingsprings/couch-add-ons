@@ -1,0 +1,65 @@
+<?php
+if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
+class CustomTags {   
+    // Email Guardian
+    // https://www.couchcms.com/forum/viewtopic.php?f=8&t=11001
+    static function email_guardian( $params, $node ){
+        global $FUNCS;
+        foreach( $node->children as $child ){
+            $html .= $child->get_HTML();
+        }
+        preg_match_all('/\b[^\s]+@[^\s]+/', strip_tags(htmlspecialchars_decode($html, ENT_QUOTES)), $emails);
+        foreach($emails[0] as $email){
+            $email = trim(strtolower($email), ".,;:?!\"\'‘’‚“”„‹›-+&#*%$@~`^()|<>[]{}/\\");
+            $code = $FUNCS->embed( "<cms:cloak_email email='{$email}' />", $is_code=1 );
+            $pos = strpos($html, $email);
+            if ($pos !== false) {
+                $html = substr_replace($html, $code, $pos, strlen($email));
+            }
+        }
+        return $html;
+    }
+    
+    // Too Many URLs 
+    // https://www.couchcms.com/forum/viewtopic.php?f=8&t=7047&start=10#p21365
+    static function too_many_urls( $params, $node ){
+        global $FUNCS, $CTX;
+        if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
+            
+        extract( $FUNCS->get_named_vars(
+            array(
+                    'in'=>'', /* field to test */
+                    'max' =>'1', /* URLs allowed. Default is 1 */
+                    'allowed' =>null, /* Backwards compatibility */
+                    ),
+            $params)
+        );
+           
+        // sanitize params    
+        $max = trim( $max );
+        $max = ($allowed != null) ? trim( $allowed ) : $max; //Backwards compatibility
+        $in = trim( $in );
+            
+        $target = $CTX->get( $in );             
+        $url_patterns = '/((\bhttps{0,1}:\/\/|<\s*a\s+href=["'."'".']{0,1})[-a-z0-9.]+\b)|(^|[^-a-z_.0-9]+)(?<!@)([-a-z0-9]+\.)+(com|net|org|edu|gov|mil|aero|asia|biz|cat|coop|info|int|jobs|mobi|museum|name|post|pro|tel|travel|xxx|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx|cy|cz|dd|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|ja|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|ss|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)\b/msi';
+
+        $url_count = preg_match_all($url_patterns, $target, $each_url);
+        if( $url_count > $max ){return true;} else{return false;}
+    }
+
+    // Image Sizes
+    // https://www.couchcms.com/forum/viewtopic.php?f=8&t=10386#p26494
+    static function image_size( $params, $node ){
+        if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
+        $image = trim( $params[0]['rhs'] );
+        $size = getimagesize($image);
+        if (trim( $params[1]['rhs'] ) == 'width'){return $size[0];}
+        else if (trim( $params[1]['rhs'] ) == 'height'){return $size[1];}
+        else if (trim( $params[1]['rhs'] ) == 'type' || trim( $params[1]['rhs'] ) == 'mime' || trim( $params[1]['rhs'] ) == 'mime-type'){return $size['mime'];}
+        else{return $size[3];}
+    }
+}
+
+$FUNCS->register_tag( 'image_size', array('CustomTags', 'image_size') );    
+$FUNCS->register_tag( 'email_guardian', array('CustomTags', 'email_guardian') );
+$FUNCS->register_tag( 'too_many_urls', array('CustomTags', 'too_many_urls') );
