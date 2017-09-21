@@ -1,4 +1,6 @@
 <?php
+if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
+
 function minify_css($css){
     //Remove comments
     $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
