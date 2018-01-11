@@ -1,4 +1,4 @@
-# Lazy Load Images, Iframes, Video, and Audio
+# Lazy Load Images, Iframes, Video and Audio
 
 Lazy loading images and other large files is a great way to get a big boost to page speed, while saving yourself and site visitors on unnecessary bandwidth usage. Lazy loading works by initially showing a 1-pixel image while hiding the real image source in a 'data-src' attribute. A script then loads the real source into the 'src' attribute only when it's needed by the viewport. 
 
@@ -33,15 +33,15 @@ Big galleries of images are the ideal use case for lazy loading.
 Lazy loading works best when the `<img>` tag or css provides explicit sizes, so the screen can be blocked out correctly on loading. Otherwise, resizing and reflowing of the page content as new images load can give a janky experience. This issue has been the biggest challenge for me because I like fluid designs based on percentages.
 
 ### Iframes
-This is my favorite use for lazy-loading. I consider it best practice to lazy load any embedded content like YouTube or Google Maps. They are always the biggest drag on page speed, both in analytics and user experience. Lazy loading embedded content makes a huge impact on the snappiness of a page. 
+This is my favorite use for lazy-loading. I consider it best practice to lazy load any embedded content like YouTube or Google Maps. They are always the biggest drag on page speed, both in analytics and user experience. Lazy loading embedded content makes a huge impact on the snappiness of a page, and this module makes it plug-and-play easy.
 
 I've found that browsers can misbehave if an iframe's 'src' attribute isn't a url. This module uses an empty file named _iframe-dummy.html_ in your site's root - the equivalent of a 1-pixel image. The tag will create the file in the site's root if it doesn't already exist.
 
 ### Video and Audio Tags
-The _ls.unveilhooks_ plugin handles video and audio. It doesn't mess with a video or audio tag's sources. Instead, the pre-processor simply sets `preload='none'` to prevent downloading the audio or video file. The script changes the attribute to `preload='auto` when it enters the viewport. It lazy loads the poster image just like other images.
+The _ls.unveilhooks_ plugin handles video and audio. It doesn't mess with a video or audio tag's sources. Instead, the pre-processor simply sets `preload='none'` to prevent downloading the audio or video file. The script changes the attribute to `preload='auto'` when it enters the viewport. It lazy loads the poster image just like other images.
 
 ### CSS Hooks
-The _lazysizes_ script provides the class names '_lazyload_,' '_lazyloading_,' and '_lazyloaded_' for you to hook styles to. The following CSS creates a fade in effect for images and adds a loading gif to iframes and video.
+The _lazysizes_ script provides the class names '_lazyload_,' '_lazyloading_,' and '_lazyloaded_' for you to hook styles to. The following CSS creates a fade-in effect for images and adds a loading gif to iframes and video.
 
     /* Lazy Loading */
     .lazyload, .lazyloading {
@@ -62,6 +62,6 @@ There is much more detailed information about using _lazysizes.js_ at https://gi
 _Note:_ This tag supports the basic lazy loading features, but not necessarily all features available with the _lazysizes_ script. If you would like to see an available feature supported, say something. 
 
 ## Installation:
-To use the tag, unzip the attached folder into `/couch/addons/` and enable it in your `kfunctions.php` file:
+To use the tag, unzip the attached folder into `couch/addons/` and enable it in your `couch/addons/kfunctions.php` file:
 
     require_once( K_COUCH_DIR.'addons/lazyload/lazyload.php' );
