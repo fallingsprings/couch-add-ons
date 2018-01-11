@@ -21,7 +21,7 @@ Wrap any portion of your Couch code with the `<cms:lazy_load>` tag to pre-proces
 
 By default, the tag processes all resource types. You can specify the types of content to target by adding parameters to the tag.
 
-    <cms:lazyload> //lazyloads images, iframes, audio/video
+    <cms:lazy_load> //lazyloads images, iframes, audio/video
     ---
     <cms:lazy_load 'image'> //only images
     ---
