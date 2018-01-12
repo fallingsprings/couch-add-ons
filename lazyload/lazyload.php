@@ -10,13 +10,13 @@ class LazyLoad{
         $default = ($params[0]['rhs'])?0:1;
         if(!$default){
             foreach($params as $resource_type){
-                if($resource_type['rhs'] == 'image' || $resource_type['rhs'] == 'images'){
+                if(strpos($resource_type['rhs'], 'image') !== false){
                     $lazy_load_images=1;
                 }
-                if($resource_type['rhs'] == 'iframe' || $resource_type['rhs'] == 'iframes'){
+                if(strpos($resource_type['rhs'], 'iframe') !== false){
                     $lazy_load_iframes=1;
                 }
-                if($resource_type['rhs'] == 'av' || $resource_type['rhs'] == 'audio' || $resource_type['rhs'] == 'video'){
+                if(strpos($resource_type['rhs'], 'av') !== false || strpos($resource_type['rhs'], 'audio') !== false || strpos($resource_type['rhs'], 'video') !== false){
                     $lazy_load_av=1;
                 }
             }
@@ -26,16 +26,35 @@ class LazyLoad{
         if (!@$dom->loadHTML('<?xml encoding="UTF-8">' . $html)) { // trick to set charset
             return $html;
         }
-        // Gather lazy-loadable resources
-        $images = array($dom->getElementsByTagName('img'));
-        $iframes = array($dom->getElementsByTagName('iframe'));
-        $videos = $dom->getElementsByTagName('video');
-        $audio = $dom->getElementsByTagName('audio');
-        $av = array($videos, $audio);
-        $blankImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
+        $blankImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        //Lazy Load images
+        if($default || $lazy_load_images){    
+            $images = array($dom->getElementsByTagName('img'));
+            foreach ( $images as $resource ) {
+                for ($i = $resource->length - 1; $i >= 0; $i--) {
+                    if ( strpos($resource->item($i)->getAttribute('class'), 'eager') === false ) {
+                        $node = $resource->item($i);
+                        $clone = $node->cloneNode();
+                    
+                        //create noscript tag
+                        $noscript = $dom->createElement('noscript');
+                        $noscript->appendChild($clone);
+                        $node->parentNode->insertBefore($noscript, $node);
+                
+                        //set up lazy load
+                        if ( $node->getAttribute('src') ) {
+                            $node->setAttribute('data-src', $node->getAttribute('src'));
+                            $node->setAttribute('src', $blankImage);
+                        }
+                        $node->setAttribute('class', trim($node->getAttribute('class') . ' lazyload'));   
+                    }
+                }
+            }
+        }
         //Lazy Load iframes
         if($default || $lazy_load_iframes){    
+            $iframes = array($dom->getElementsByTagName('iframe'));
             foreach ( $iframes as $resource ) {
                 for ($i = $resource->length - 1; $i >= 0; $i--) {
                     if ( strpos($resource->item($i)->getAttribute('class'), 'eager') === false ) {
@@ -60,31 +79,11 @@ class LazyLoad{
                 }
             }
         }
-        //Lazy Load images
-        if($default || $lazy_load_images){    
-            foreach ( $images as $resource ) {
-                for ($i = $resource->length - 1; $i >= 0; $i--) {
-                    if ( strpos($resource->item($i)->getAttribute('class'), 'eager') === false ) {
-                        $node = $resource->item($i);
-                        $clone = $node->cloneNode();
-                    
-                        //create noscript tag
-                        $noscript = $dom->createElement('noscript');
-                        $noscript->appendChild($clone);
-                        $node->parentNode->insertBefore($noscript, $node);
-                
-                        //set up lazy load
-                        if ( $node->getAttribute('src') ) {
-                            $node->setAttribute('data-src', $node->getAttribute('src'));
-                            $node->setAttribute('src', $blankImage);
-                        }
-                        $node->setAttribute('class', trim($node->getAttribute('class') . ' lazyload'));   
-                    }
-                }
-            }
-        }
         //Lazy Load video and audio
         if($default || $lazy_load_av){    
+            $videos = $dom->getElementsByTagName('video');
+            $audio = $dom->getElementsByTagName('audio');
+            $av = array($videos, $audio);
             foreach ( $av as $resource ) {
                 for ($i = $resource->length - 1; $i >= 0; $i--) {
                     if ( strpos($resource->item($i)->getAttribute('class'), 'eager') === false ) {
