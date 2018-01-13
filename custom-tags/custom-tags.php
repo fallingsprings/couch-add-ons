@@ -49,7 +49,7 @@ class CustomTags {
 
     // Image Sizes
     // https://www.couchcms.com/forum/viewtopic.php?f=8&t=10386#p26494
-    static function image_size( $params, $node ){
+    static function get_image_size( $params, $node ){
         if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
         $image = trim( $params[0]['rhs'] );
         $size = getimagesize($image);
@@ -60,6 +60,6 @@ class CustomTags {
     }
 }
 
-$FUNCS->register_tag( 'image_size', array('CustomTags', 'image_size') );    
+$FUNCS->register_tag( 'get_image_size', array('CustomTags', 'get_image_size') );    
 $FUNCS->register_tag( 'email_guardian', array('CustomTags', 'email_guardian') );
 $FUNCS->register_tag( 'too_many_urls', array('CustomTags', 'too_many_urls') );
