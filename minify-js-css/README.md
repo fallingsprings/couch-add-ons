@@ -14,6 +14,17 @@ The minify tag will combine and minimize CSS or JS files. It concatenates and mi
         js/custom.js
     </cms:minify>
 
+The `<cms:minify>` tag combines and minimizes all files in the list in the order given, storing the result in an external file. It renders a `<script>` or `<link>` tag for the combined file. If you don't specify an output file, the minimized code will be rendered inline.
+
+    <cms:minify 'css'>
+        css/bootstrap.css
+        css/bootstrap-theme.css
+        css/custom.css
+    </cms:minify>
+
+The minimized file only gets updated when the last modification date of included files is newer than the current output file, i.e. when you make changes. So it doesn't create a new file with every single page load. Delete the output file in order to force update. 
+
+Remember that relative urls in your CSS or JS files (like fonts or background images) will now be relative to the new, minimized file. Or to the web page if rendered inline.
 
 ## Parameters
 
@@ -21,7 +32,7 @@ The minify tag will combine and minimize CSS or JS files. It concatenates and mi
 'css' or 'js'
 
 ### output_file
-The single combined file that will be served to the page. Should be _relative to the site's root_. You can use any parameter name you want for the output file. Both of the above tags work the same.
+The single combined file that will be served to the page. Should be _relative to the site's root_. You can use any parameter name you want for the output file. Both of the above tags work the same. If you don't specify an output file, the minimized code will be rendered inline.
 
 ### attributes
 Any additional parameters after the output file name will pass through to the rendered tag.
@@ -32,13 +43,8 @@ If you wish to add an attribute to _inline_ js or css, you must explicitly decla
 
 	<cms:minify 'js' as='' defer='defer'>
 
-## Usage
-The `<cms:minify>` tag combines and minimizes all files in the list in the order given, storing the result in an external file. It renders a `<script>` or `<link>` tag for the combined file.
-
-The minimized file only gets updated when the last modification date of included files is newer than the current output file, i.e. when you make changes. So it doesn't create a new file with every single page load. Delete the output file in order to force update. 
-
-### Timestamps
-Timestamping your assets to bust browser caching is especially useful for sites with lots of regular users. This tag offers 2 optional methods to timestamp output files for version control. The feature needs to be turned on in the _minify.php_ file. At the top of the file, you'll find these lines. Uncomment either one to turn on versioning.
+### timestamps
+Time-stamping your assets to bust browser caching is especially useful for sites with lots of regular users. This tag offers 2 optional methods to timestamp output files for version control. The feature needs to be turned on in the _minify.php_ file. At the top of the file, you'll find these lines. Uncomment either one to turn on versioning.
 
     //define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
     //define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
@@ -50,17 +56,6 @@ The second choice adds a timestamp to the filename itself: `styles.min.css^15156
     RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
     
 This method is borrowed from [@trendoman's `<cms:rel>` tag](https://www.couchcms.com/forum/viewtopic.php?f=8&t=10644). 
-
-### Inline scripts and styles
-If you don't specify an output file, the tag renders the output inline with a `<style>` or `<script>` tag.
-
-    <cms:minify 'css'>
-        css/bootstrap.css
-        css/bootstrap-theme.css
-        css/custom.css
-    </cms:minify>
-
-Remember that relative urls in your CSS or JS files (like fonts or background images) will now be relative to the new, minimized file. Or to the web page if rendered inline.
 
 _Note:_ In order to write the new ouput file, your server must have allow_url_fopen enabled.  If you get an empty output file - and you haven't made any mistakes with your file list - add `allow_url_fopen=1` to your php.ini file, or contact your host for help.
  
