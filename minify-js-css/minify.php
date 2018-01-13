@@ -54,8 +54,11 @@ class MinifyJsCss{
             $files = preg_split('/[\s,+]/', $file_list, -1, PREG_SPLIT_NO_EMPTY);
             //strip away k_site_link if present
             $files = str_replace(K_SITE_URL, '', $files);
-            //trim leading forward slash
-            foreach( $files as &$file ){$file = ltrim($file, '/');}
+            //sanitize file path
+            foreach( $files as &$file ){
+                $file = str_replace(K_SITE_URL, '', $files);
+                $file = ltrim($file, '/');
+            }
         }else{
             die("ERROR: Tag \"".$node->name."\" - No files were listed.");
         }
