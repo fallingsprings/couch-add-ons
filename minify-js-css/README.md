@@ -32,7 +32,7 @@ Remember that relative urls in your CSS or JS files (like fonts or background im
 'css' or 'js'
 
 ### output_file
-The single combined file that will be served to the page. Should be _relative to the site's root_. You can use any parameter name you want for the output file. Both of the above tags work the same. If you don't specify an output file, the minimized code will be rendered inline.
+The single combined file that will be served to the page. You can use any parameter name you want for the output file. Both of the above tags work the same. If you don't specify an output file, the minimized code will be rendered inline.
 
 ### attributes
 Any additional parameters after the output file name will pass through to the rendered tag.
