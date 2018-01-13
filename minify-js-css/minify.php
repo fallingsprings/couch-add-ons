@@ -1,6 +1,7 @@
 <?php
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
 
+//Timestamps
 //define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
 //define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
         //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
@@ -34,8 +35,9 @@ class MinifyJsCss{
         // sanitize params
         $filetype = strtolower(trim($params[0]['rhs']));
         if($filetype != 'css' && $filetype != 'js'){die("ERROR: Tag \"".$node->name."\" - Must specify either 'css' or 'js'.");}
-        $output_file = ($params[1]['rhs']) ? K_SITE_DIR . trim($params[1]['rhs']) : '';
-        $output_link = ($output_file) ? K_SITE_URL . trim($params[1]['rhs']) : '';
+        $filepath = trim(str_replace( K_SITE_URL, "", $params[1]['rhs'] ));
+        $output_file = ($filepath) ? K_SITE_DIR . $filepath : '';
+        $output_link = ($filepath) ? K_SITE_URL . $filepath : '';
         $i=0;
         foreach($params as $attribs){
             if($i > 1){
