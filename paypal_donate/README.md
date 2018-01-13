@@ -60,7 +60,7 @@ The generated button provides PayPal with a link to the page that will process t
 
 This is a pass-through variable for your own purposes. Donors won't see it. 
 
-##Variables
+## Variables
 
 This tag is self-closing and does not set any variables of its own.
 
