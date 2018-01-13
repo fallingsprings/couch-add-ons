@@ -1,6 +1,10 @@
 <?php
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
 
+//define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
+//define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
+        //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
+
 function minify_css($css){
     //Remove comments
     $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
@@ -11,6 +15,17 @@ function minify_css($css){
     //final semicolon
     $css = preg_replace('/;}/', '}', $css);
     return $css;
+}
+
+function minify_timestamp( $link, $file ){ 
+    //versioning technique by @trendoman
+    //https://www.couchcms.com/forum/viewtopic.php?f=8&t=10644
+    $fileDetails = pathinfo( $link );
+    $dirname = strtolower( $fileDetails["dirname"] );
+    $filename = strtolower( $fileDetails["filename"] );
+    $extension = strtolower( $fileDetails["extension"] );
+    $output = $dirname . "/" . $filename . "." . $extension . "^" . filemtime( $file ) . "^." . $extension;
+    return $output;
 }
 
 class MinifyJsCss{
@@ -42,6 +57,13 @@ class MinifyJsCss{
         }else{
             die("ERROR: Tag \"".$node->name."\" - No files were listed.");
         }
+        if(MINIFY_TIMESTAMP_FILENAME===1){$output_link = minify_timestamp($output_link, $output_file);}
+        $css_tag = '<link rel="stylesheet" href="'.$output_link;
+        if(MINIFY_TIMESTAMP_QUERYSTRING===1){$css_tag .= '?'.filemtime($output_file);}
+        $css_tag .= '"'.$tag_attributes.' />';
+        $js_tag = '<script type="text/javascript" src="'.$output_link;
+        if(MINIFY_TIMESTAMP_QUERYSTRING===1){$js_tag .= '?'.filemtime($output_file);}
+        $js_tag .= '"'.$tag_attributes.'></script>';
         
         //compare modification dates to output file
         if($output_file){
@@ -52,10 +74,10 @@ class MinifyJsCss{
             }
             //No new modifications. Render 'link' or 'script' tag. Done.
             if (!$modified && $filetype == 'css'){
-                return '<link rel="stylesheet" href="'.$output_link.'?'.filemtime($output_file).'"'.$tag_attributes.' />';
+                return $css_tag;
                 }
             if (!$modified && $filetype == 'js'){
-                return '<script type="text/javascript" src="'.$output_link.'?'.filemtime($output_file).'"'.$tag_attributes.'></script>';
+                return $js_tag;
             }
         }
         
@@ -79,10 +101,10 @@ class MinifyJsCss{
         //Create new output file. Render tag. Done.
         file_put_contents($output_file, $output);
         if ($filetype == 'css'){
-            return '<link rel="stylesheet" href="'.$output_link.'?'.filemtime($output_file).'"'.$tag_attributes.' />';
+                return $css_tag;
         }
         if ($filetype == 'js'){
-            return '<script type="text/javascript" src="'.$output_link.'?'.filemtime($output_file).'"'.$tag_attributes.'></script>';
+                return $js_tag;
         }
     }
 }
