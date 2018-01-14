@@ -32,10 +32,10 @@ By default, the tag processes all resource types. You can specify the types of c
 ### Images
 Big galleries of images are the ideal use case for lazy loading.
 
-Lazy loading works best when the `<img>` tag or css provides explicit sizes, so the screen can be blocked out correctly on loading. Otherwise, resizing and reflowing of the page content as new images load can give a janky experience. This issue has been the biggest challenge for me because I like fluid designs based on percentages.
+Lazy loading works best when the `<img>` tag or css provides explicit sizes, so the screen can be blocked out correctly on loading. Otherwise, resizing and reflowing of the page content as new images load can give a janky experience. This issue has been the biggest challenge for me because it constrains your design choices.
 
 ### Iframes
-This is my favorite use for lazy-loading. I consider it best practice to lazy load any embedded content like YouTube or Google Maps. They are always the biggest drag on page speed, both in analytics and user experience. Lazy loading embedded content makes a huge impact on the snappiness of a page, and this module makes it plug-and-play easy.
+This is my favorite use for lazy-loading. I consider it best practice to lazy load any embedded content like YouTube or Google Maps. They're always the biggest drag on page speed, both in analytics and user experience. Lazy loading embedded content makes a huge impact on the snappiness of a page, and this module makes it plug-and-play easy.
 
 I've found that browsers can misbehave if an iframe's 'src' attribute isn't a url. This module uses an empty file named _iframe-dummy.html_ in your site's root - the equivalent of a 1-pixel image. The tag will create the file in the site's root if it doesn't already exist.
 
