@@ -9,7 +9,9 @@ It's a neat trick, but the non-standard markup makes it a hassle to write and ma
 ### lazysizes.js
 I have chosen to use _lazysizes.js_ (https://github.com/aFarkas/lazysizes) with this module. It's a script that's free from dependencies like jQuery, and it has worked well for my own purposes. The necessary _lazysizes_ scripts are bundled together with this tag, but will have to be added by you to the javascript on the page.
 
-Most lazy-load scripts work essentially the same way, so this pre-processor can be made to work with other scripts. But some of the details may need tweaking.
+All lazy-load scripts work on the same principle, so this pre-processor can be made to work with other scripts. For images and iframes, the only difference should be the class name that triggers lazy loading (audio and video may be more complicated). This module uses "lazyload" as the trigger. You can configure the trigger class in your lazy-load script, or change the trigger definition in _lazyload.php_.
+
+    define(LAZYLOAD_TRIGGER, 'lazyload');
 
 ### Usage
 Include the lazy load script(s) on the web page. The _ls.unveilhooks.min.js_ script is a plugin for `<audio>` or `<video>` tags. It's not needed unless you're using it for those tags.

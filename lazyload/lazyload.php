@@ -1,5 +1,6 @@
 <?php
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
+define(LAZYLOAD_TRIGGER, 'lazyload');
 
 class LazyLoad{            
     static function lazy_load( $params, $node ){        
@@ -47,7 +48,7 @@ class LazyLoad{
                             $node->setAttribute('data-src', $node->getAttribute('src'));
                             $node->setAttribute('src', $blankImage);
                         }
-                        $node->setAttribute('class', trim($node->getAttribute('class') . ' lazyload'));   
+                        $node->setAttribute('class', trim($node->getAttribute('class') . ' ' . LAZYLOAD_TRIGGER));   
                     }
                 }
             }
@@ -74,7 +75,7 @@ class LazyLoad{
                             }
                             $node->setAttribute('src', '/iframe-dummy.html');
                         }
-                        $node->setAttribute('class', trim($node->getAttribute('class') . ' lazyload'));   
+                        $node->setAttribute('class', trim($node->getAttribute('class') . ' ' . LAZYLOAD_TRIGGER));   
                     }
                 }
             }
@@ -101,7 +102,7 @@ class LazyLoad{
                             $node->setAttribute('poster', $blankImage);
                         }
                         $node->setAttribute('preload', 'none');
-                        $node->setAttribute('class', trim($node->getAttribute('class') . ' lazyload'));   
+                        $node->setAttribute('class', trim($node->getAttribute('class') . ' ' . LAZYLOAD_TRIGGER));   
                     }
                 }
             }
