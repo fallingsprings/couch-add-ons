@@ -56,7 +56,7 @@ class MinifyJsCss{
             $files = str_replace(K_SITE_URL, '', $files);
             //sanitize file path
             foreach( $files as &$file ){
-                $file = str_replace(K_SITE_URL, '', $files);
+                $file = str_replace(K_SITE_URL, '', $file);
                 $file = ltrim($file, '/');
             }
         }else{
