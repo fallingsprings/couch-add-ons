@@ -32,7 +32,9 @@ By default, the tag processes all resource types. You can specify the types of c
 ### Images
 Big galleries of images are the ideal use case for lazy loading.
 
-Lazy loading works best when the `<img>` tag or css provides explicit sizes, so the screen can be blocked out correctly on loading. Otherwise, resizing and reflowing of the page content as new images load can give a janky experience. This issue has been the biggest challenge for me because it constrains your design choices.
+Lazy loading works best when the `<img>` tag or css provides explicit sizes, so the screen can be blocked out correctly on loading. Otherwise, resizing and reflowing of the page content as new images load can give a janky experience. This issue can be challenging because it constrains your design choices.
+
+With _lazysizes.js_, this module will also lazy-load responsive images.
 
 ### Iframes
 This is my favorite use for lazy-loading. I consider it best practice to lazy load any embedded content like YouTube or Google Maps. They're always the biggest drag on page speed, both in analytics and user experience. Lazy loading embedded content makes a huge impact on the snappiness of a page, and this module makes it plug-and-play easy.
@@ -59,9 +61,7 @@ The _lazysizes_ script provides the class names '_lazyload_,' '_lazyloading_,' a
         background: url('icons/loading.gif') no-repeat 50% 50%;
         }
 
-There is much more detailed information about using _lazysizes.js_ at https://github.com/aFarkas/lazysizes.
-
-_Note:_ This tag supports the basic lazy loading features, but not necessarily all features available with the _lazysizes_ script. If you would like to see an available feature supported, say something. 
+There is much more detailed information about using _lazysizes.js_ at https://github.com/aFarkas/lazysizes. 
 
 ## Installation:
 To use the tag, unzip the attached folder into `couch/addons/` and enable it in your `couch/addons/kfunctions.php` file:
