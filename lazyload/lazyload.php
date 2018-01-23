@@ -31,22 +31,41 @@ class LazyLoad{
         $blankImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         //Lazy Load images
         if($default || $lazy_load_images){    
-            $images = array($dom->getElementsByTagName('img'));
-            foreach ( $images as $resource ) {
+            $images = $dom->getElementsByTagName('img');
+            $pictures = $dom->getElementsByTagName('picture');
+            foreach ( $pictures as $item ) {
+                $picture_sources = $item->getElementsByTagName('source'); 
+            }
+            $resources = array($images, $pictures, $picture_sources);
+            foreach ( $resources as $resource ) {
                 for ($i = $resource->length - 1; $i >= 0; $i--) {
                     if ( strpos($resource->item($i)->getAttribute('class'), 'eager') === false ) {
                         $node = $resource->item($i);
                         $clone = $node->cloneNode();
                     
                         //create noscript tag
+                        //include <picture>, exclude <source> and <img> tags inside <picture>
+                        if(($node->tagName == 'picture') || $node->parentNode->tagName != 'picture' && $node->parentNode->tagName != 'source'){
                         $noscript = $dom->createElement('noscript');
                         $noscript->appendChild($clone);
                         $node->parentNode->insertBefore($noscript, $node);
+                        }
                 
                         //set up lazy load
+                        //img src
                         if ( $node->getAttribute('src') ) {
                             $node->setAttribute('data-src', $node->getAttribute('src'));
                             $node->setAttribute('src', $blankImage);
+                        }
+                        //responsive images
+                        if ( $node->getAttribute('srcset') ) {
+                            $node->setAttribute('data-srcset', $node->getAttribute('srcset'));
+                            $node->removeAttribute('srcset');
+                            //autosizes
+                            if ( $node->getAttribute('sizes') == 'auto') {
+                                $node->setAttribute('data-sizes', 'auto');
+                                $node->removeAttribute('sizes');
+                            }
                         }
                         $node->setAttribute('class', trim($node->getAttribute('class') . ' ' . LAZYLOAD_TRIGGER));   
                     }
