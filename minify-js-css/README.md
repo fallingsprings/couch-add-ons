@@ -42,16 +42,51 @@ Any additional parameters after the output file name will pass through to the re
 If you wish to add an attribute to _inline_ js or css, you must explicitly declare the empty output filename in it's proper order.
 
 	<cms:minify 'js' as='' defer='defer'>
+    
+## Code Blocks
+In addition to external files, you can also include blocks of inline code inside the _<cms:minify>_ tag. Simply mark the beginning and end of each code block with the marker `/*CODE*/` One use case would be for mixing server-side Couch variables into your styles and scripts. This can be a powerful technique for integrating server-side data into your client-side scripts or stylesheets.
 
-### timestamps
-Time-stamping your assets to bust browser caching is especially useful for sites with lots of regular users. This tag offers 2 optional methods to timestamp output files for version control. The feature needs to be turned on in the _minify.php_ file. At the top of the file, you'll find these lines. Uncomment either one to turn on versioning.
+    <cms:minify 'js'>
+        js/jquery.js
+        js/bootstrap.js
+        
+        /*CODE*/
+        var my_template = <cms:show k_template_title/>;
+        alert(my_template);
+        /*CODE*/
+        
+        js/custom.js
+        
+        /*CODE*/
+        alert('Any number and combination of external files and code blocks allowed.');
+        /*CODE*/        
+    </cms:minify>
+    
+This method will be most useful when the minified code is rendered inline. Otherwise, the cached external file can't respond dynamically to the conditions of the template.
+        
+_Pro-tip:_ The above configuration will break the syntax highlighting on your text editor, because the editor doesn't know what type of code it's displaying. You can wrap your code blocks with `<script>` or `<style>` tags to get the correct highlighting and other features from your text editor. If the tags are outside of the `/*CODE*/` markers, they will be discarded in processing.
+
+    <cms:minify 'js'>
+        js/jquery.js
+        js/bootstrap.js
+        
+        <script>/*CODE*/
+            var my_template = <cms:show k_template_title/>
+            alert(my_template);
+        /*CODE*/</script>
+        
+        js/custom.js
+    </cms:minify>
+
+### Timestamps
+Time-stamping your assets to bust browser caching is especially useful for sites with lots of regular users. This tag offers 2 optional methods to timestamp output files for version control. The feature needs to be turned on in the _minify.php_ file. At the top of the file, you'll find these two lines. Uncomment one or the other to turn on versioning.
 
     //define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
     //define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
 
-The first option adds a querystring to the filename: `styles.min.css?1515655661`. There are questions about how well this method works. In some cases it may prevent caching.
+The first option adds a querystring to the filename: `styles.min.css?1515655661`.
 
-The second choice adds a timestamp to the filename itself: `styles.min.css^1515655661^.css`. The actual filename isn't changed, just the output on the front end. For this method, you have to add a rewrite rule to the .htaccess file in the site's root to direct the link to the correct file.
+The second choice adds a timestamp to the filename itself: `styles.min.css^1515655661^.css`. The actual filename isn't changed, just the output on the front end. For this method, you have to add a rewrite rule to the .htaccess file in the site's root in order to direct the link to the correct file.
 
     RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
     

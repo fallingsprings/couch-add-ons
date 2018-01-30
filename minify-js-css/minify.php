@@ -2,7 +2,7 @@
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
 
 //Timestamps
-//define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
+define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
 //define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
         //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
 
@@ -49,19 +49,32 @@ class MinifyJsCss{
         foreach( $node->children as $child ){
             $file_list .= $child->get_HTML();
         }
-        if($file_list){
+            //Split on /*CODE*/ chunks
+            $chunks = explode('/*CODE*/', $file_list);
+            //separate into files and code chunks
+            if(count($chunks) > 1){
+                $code_chunk = array();
+                $count = 0;
+                foreach( $chunks as &$chunk ){
+                    $count += 1;
+                    if ($count % 2 == 0){
+                        //store code chunk and insert a placeholder
+                        $code_chunk[] = $chunk;
+                        $chunk=' _|*KCODECHUNK*|_ ';
+                    }
+                }
+                $file_list = implode('', $chunks);
+            }
+
             //Split on whitespace and commas
             $files = preg_split('/[\s,+]/', $file_list, -1, PREG_SPLIT_NO_EMPTY);
-            //strip away k_site_link if present
-            $files = str_replace(K_SITE_URL, '', $files);
             //sanitize file path
             foreach( $files as &$file ){
-                $file = str_replace(K_SITE_URL, '', $file);
-                $file = ltrim($file, '/');
+                    $file = str_replace(K_SITE_URL, '', $file);
+                    $file = ltrim($file, '/');
             }
-        }else{
-            die("ERROR: Tag \"".$node->name."\" - No files were listed.");
-        }
+        if(!$files){return false;}
+        
         if(MINIFY_TIMESTAMP_FILENAME===1){$output_link = minify_timestamp($output_link, $output_file);}
         $css_tag = '<link rel="stylesheet" href="'.$output_link;
         if(MINIFY_TIMESTAMP_QUERYSTRING===1){$css_tag .= '?'.filemtime($output_file);}
@@ -76,6 +89,10 @@ class MinifyJsCss{
                 if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
                     $modified = 1; break;
                 }
+                //compare to current template if there are code chunks
+                if ($item === '_|*KCODECHUNK*|_' && ( getlastmod() > filemtime($output_file) )){
+                    $modified = 1; break;
+                }
             }
             //No new modifications. Render 'link' or 'script' tag. Done.
             if (!$modified && $filetype == 'css'){
@@ -87,8 +104,10 @@ class MinifyJsCss{
         }
         
         //Combine files
-        foreach($files as $item){ 
-            $content .= file_get_contents(K_SITE_URL . $item);
+        $count=0;
+        foreach($files as $item){
+            if($item == '_|*KCODECHUNK*|_'){$content .= $code_chunk[$count]; $count+=1;}
+            else{$content .= file_get_contents(K_SITE_URL . $item);}
         }
         //minify combined files
         if ($filetype == 'css'){ $output = minify_css($content); }
