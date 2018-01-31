@@ -51,7 +51,7 @@ In addition to external files, you can also include blocks of inline code inside
         js/bootstrap.js
         
         /*CODE*/
-        var my_template = <cms:show k_template_title/>;
+        var my_template = "<cms:show k_template_title/>";
         alert(my_template);
         /*CODE*/
         
@@ -64,7 +64,7 @@ In addition to external files, you can also include blocks of inline code inside
     
 This method will be most useful when the minified code is rendered inline. Otherwise, the cached external file can't respond dynamically to the conditions of the template.
         
-_Pro-tip:_ The above configuration will break the syntax highlighting on your text editor, because the editor doesn't know what type of code it's displaying. You can wrap your code blocks with `<script>` or `<style>` tags to get the correct highlighting and other features from your text editor. If the tags are outside of the `/*CODE*/` markers, they will be discarded in processing.
+_Pro-tip:_ The above configuration may break the syntax highlighting on your text editor because the editor doesn't know what type of code it's displaying. You can wrap your code blocks with `<script>` or `<style>` tags to get the correct highlighting and other features from your text editor. If the tags are outside of the `/*CODE*/` markers, they will be discarded in processing.
 
     <cms:minify 'js'>
         js/jquery.js
@@ -86,11 +86,9 @@ Time-stamping your assets to bust browser caching is especially useful for sites
 
 The first option adds a querystring to the filename: `styles.min.css?1515655661`.
 
-The second choice adds a timestamp to the filename itself: `styles.min.css^1515655661^.css`. The actual filename isn't changed, just the output on the front end. For this method, you have to add a rewrite rule to the .htaccess file in the site's root in order to direct the link to the correct file.
+The second choice adds a timestamp to the filename itself: `styles.min.css^1515655661^.css`. The actual filename isn't changed, just the output on the front end. For this method, you have to add a rewrite rule to the .htaccess file in the site's root in order to direct the link to the correct file. This method is borrowed from [@trendoman's `<cms:rel>` tag](https://www.couchcms.com/forum/viewtopic.php?f=8&t=10644).
 
-    RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
-    
-This method is borrowed from [@trendoman's `<cms:rel>` tag](https://www.couchcms.com/forum/viewtopic.php?f=8&t=10644). 
+    RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L] 
 
 _Note:_ In order to write the new ouput file, your server must have allow_url_fopen enabled.  If you get an empty output file - and you haven't made any mistakes with your file list - add `allow_url_fopen=1` to your php.ini file, or contact your host for help.
  
