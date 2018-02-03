@@ -18,6 +18,10 @@ This add-on also provides support for the HTML5 "required" attribute - but only 
 
 The add-on not only renders the input tags, but also adds automatic server-side validation to back up the native browser validation. Couch will generate the same errors that you would expect from browser validation. Error messages can be modified in the language files for customization and localization.
 
+Type 'email' uses Couch's built in email validation, so customization would be done with a _validator_msg_ parameter.
+
+    <cms:input type="email" name="email" required='1' validator_msg='required=Please enter your email.|email=Not a valid email. Please check for mistakes.' />
+
 Since automatic validation can sometimes interfere with what you want to accomplish, it can be disabled by setting the parameter `validate='0'` on any of these input types. The parameter `validate='0'` will turn off automatic validation for the tag but won't affect any other Couch validation that is present. For example, the following line won't validate the email address, but the input will still be required:
 
 	<cms:input type='email' validate='0' required='1' />
