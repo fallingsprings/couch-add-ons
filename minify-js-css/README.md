@@ -44,7 +44,7 @@ If you wish to add an attribute to _inline_ js or css, you must explicitly decla
 	<cms:minify 'js' as='' defer='defer'>
     
 ## Code Blocks
-In addition to external files, you can also include blocks of inline code inside the _<cms:minify>_ tag. Simply mark the beginning and end of each code block with the marker `/*CODE*/` One use case would be for mixing server-side Couch variables into your styles and scripts. This can be a powerful technique for integrating server-side data into your client-side scripts or stylesheets.
+In addition to external files, you can also include blocks of inline code inside the _<cms:minify>_ tag. Simply mark the beginning and end of each code block with the marker `/*CODE*/` One use case would be for mixing server-side Couch variables into your styles and scripts, which can be a powerful technique for integrating server-side data into your client-side scripts or stylesheets.
 
     <cms:minify 'js'>
         js/jquery.js

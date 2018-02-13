@@ -2,7 +2,7 @@
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
 
 //Timestamps
-define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
+//define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
 //define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
         //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
 
