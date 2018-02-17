@@ -47,7 +47,7 @@ class CustomTags {
         if( $url_count > $max ){return true;} else{return false;}
     }
 
-    // Image Sizes
+    // Get Image Size
     // https://www.couchcms.com/forum/viewtopic.php?f=8&t=10386#p26494
     static function get_image_size( $params, $node ){
         if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
@@ -58,7 +58,8 @@ class CustomTags {
         else if (trim( $params[1]['rhs'] ) == 'type' || trim( $params[1]['rhs'] ) == 'mime' || trim( $params[1]['rhs'] ) == 'mime-type'){return $size['mime'];}
         else{return $size[3];}
     }
-    
+    // Average color of an image
+    // https://www.couchcms.com/forum/viewtopic.php?f=8&t=11312
     static function avg_color ( $params, $node ){
         if( count($node->children) ) {die("ERROR: Tag \"".$node->name."\" is a self closing tag");}
         $opacity='1';
