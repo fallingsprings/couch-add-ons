@@ -3,8 +3,8 @@ if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
 
 //Timestamps
 //define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
-//define('MINIFY_TIMESTAMP_FILENAME', 1);// ** Requires a rewrite rule in .htaccess **
-        //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
+//define('MINIFY_TIMESTAMP_FILENAME', 1);// Requires a rewrite rule in .htaccess
+    //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
 
 function minify_css($css){
     //Remove comments
@@ -31,7 +31,8 @@ function minify_timestamp( $link, $file ){
 
 class MinifyJsCss{
     static function minify_js_css( $params, $node ){
-           
+        global $FUNCS;
+        
         // sanitize params
         $filetype = strtolower(trim($params[0]['rhs']));
         if($filetype != 'css' && $filetype != 'js'){die("ERROR: Tag \"".$node->name."\" - Must specify either 'css' or 'js'.");}
@@ -87,11 +88,18 @@ class MinifyJsCss{
         if($output_file){
             foreach($files as $item){
                 if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
-                    $modified = 1; break;
+                    if(MINIFY_TIMESTAMP_FILENAME===1 || MINIFY_TIMESTAMP_QUERYSTRING===1){
+                        $FUNCS->invalidate_cache();
+                    }
+                    $modified = 1;
+                    break;
                 }
-                //compare to current template if there are code chunks
                 if ($item === '_|*KCODECHUNK*|_' && ( getlastmod() > filemtime($output_file) )){
-                    $modified = 1; break;
+                    if(MINIFY_TIMESTAMP_FILENAME===1 || MINIFY_TIMESTAMP_QUERYSTRING===1){
+                        $FUNCS->invalidate_cache();
+                    }
+                    $modified = 1;
+                    break;
                 }
             }
             //No new modifications. Render 'link' or 'script' tag. Done.
