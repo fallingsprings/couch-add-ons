@@ -1,7 +1,7 @@
 <?php
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
 
-//Timestamps
+//Uncomment only one of these to timestamp links for cache-busting.
 //define('MINIFY_TIMESTAMP_QUERYSTRING', 1);
 //define('MINIFY_TIMESTAMP_FILENAME', 1);// Requires a rewrite rule in .htaccess
     //RewriteRule ^(.+)\^([\d-]+)\^\.(js|css)$ $1 [L]
@@ -76,26 +76,26 @@ class MinifyJsCss{
             }
         if(!$files){return false;}
         
-        if(MINIFY_TIMESTAMP_FILENAME===1){$output_link = minify_timestamp($output_link, $output_file);}
+        if(defined('MINIFY_TIMESTAMP_FILENAME')){$output_link = minify_timestamp($output_link, $output_file);}
         $css_tag = '<link rel="stylesheet" href="'.$output_link;
-        if(MINIFY_TIMESTAMP_QUERYSTRING===1){$css_tag .= '?'.filemtime($output_file);}
+        if(defined('MINIFY_TIMESTAMP_QUERYSTRING')){$css_tag .= '?'.filemtime($output_file);}
         $css_tag .= '"'.$tag_attributes.' />';
         $js_tag = '<script type="text/javascript" src="'.$output_link;
-        if(MINIFY_TIMESTAMP_QUERYSTRING===1){$js_tag .= '?'.filemtime($output_file);}
+        if(defined('MINIFY_TIMESTAMP_QUERYSTRING')){$js_tag .= '?'.filemtime($output_file);}
         $js_tag .= '"'.$tag_attributes.'></script>';
         
         //compare modification dates to output file
         if($output_file){
             foreach($files as $item){
                 if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
-                    if(MINIFY_TIMESTAMP_FILENAME===1 || MINIFY_TIMESTAMP_QUERYSTRING===1){
+                    if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
                         $FUNCS->invalidate_cache();
                     }
                     $modified = 1;
                     break;
                 }
                 if ($item === '_|*KCODECHUNK*|_' && ( getlastmod() > filemtime($output_file) )){
-                    if(MINIFY_TIMESTAMP_FILENAME===1 || MINIFY_TIMESTAMP_QUERYSTRING===1){
+                    if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
                         $FUNCS->invalidate_cache();
                     }
                     $modified = 1;
