@@ -12,6 +12,7 @@
 
     $path .= K_DB_NAME . '_';
     $command = "\$command='" . K_MYSQL_PATH  . "mysqldump";
+    $command .= ' --password=**DB_PASSWORD**';
     $command .= ' --user=' . K_DB_USER;
     $db_host = array_map( "trim", explode(':', K_DB_HOST) );
     $command .= ' --host=' . $db_host[0];
@@ -25,12 +26,15 @@
 
     echo "//Place this file in your cgi-bin and call it from a Cron Job.\n";
     echo "//Check with your host for details on their requirements for Cron Job scripts.\n\n";
+    echo "//IMPORTANT!\n";
+    echo "//For security, your database password is not included in the script.\n";
+    echo "//Replace **DB_PASSWORD** in the script below with your database password.\n\n";
 
     echo "\$now = date('Y-m-d');\n";
     echo $command . "\n\n";
     echo "exec(\$command);\n\n";
     echo "//Optionally, email a notification to the webmaster.\n";
-    echo "//mail('webmaster@mysite.com', '". K_DB_NAME . " Database Backup', 'Database backup for " . K_DB_NAME . " was saved on '.\$now.'.');\n";
+    echo "//mail('webmaster@mysite.com', '". K_DB_NAME . " Database Backup', 'Database backup for " . K_DB_NAME . " was saved on ' .\$now. '.');\n";
 
     echo '?';
     echo ">";

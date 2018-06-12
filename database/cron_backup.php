@@ -13,6 +13,7 @@
     }
 
     $command .= ' --user=' . escapeshellarg( K_DB_USER );
+    $command .= ' --password=' . escapeshellarg( K_DB_PASSWORD );
     $db_host = array_map( "trim", explode(':', K_DB_HOST) );
     $command .= ' --host=' . escapeshellarg( $db_host[0] );
     if( strlen($db_host[1]) ){
