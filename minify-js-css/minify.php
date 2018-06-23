@@ -87,12 +87,14 @@ class MinifyJsCss{
         //compare modification dates to output file
         if($output_file){
             foreach($files as $item){
-                if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
-                    if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
+                if(is_file(K_SITE_DIR . $item)){
+                    if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
+                        if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
                         $FUNCS->invalidate_cache();
+                        }
+                        $modified = 1;
+                        break;
                     }
-                    $modified = 1;
-                    break;
                 }
                 if ($item === '_|*KCODECHUNK*|_' && ( getlastmod() > filemtime($output_file) )){
                     if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
