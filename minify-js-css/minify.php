@@ -117,7 +117,7 @@ class MinifyJsCss{
         $count=0;
         foreach($files as $item){
             if($item == '_|*KCODECHUNK*|_'){$content .= $code_chunk[$count]; $count+=1;}
-            elseif(is_file(K_SITE_URL . $item)){$content .= file_get_contents(K_SITE_URL . $item);}
+            elseif(is_file(K_SITE_DIR . $item)){$content .= file_get_contents(K_SITE_DIR . $item);}
         }
         //minify combined files
         if ($filetype == 'css'){ $output = minify_css($content); }
