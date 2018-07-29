@@ -18,14 +18,14 @@ function minify_css($css){
     return $css;
 }
 
-function minify_timestamp( $link, $file ){ 
+function minify_timestamp( $link, $last_mod ){ 
     //versioning technique by @trendoman
     //https://www.couchcms.com/forum/viewtopic.php?f=8&t=10644
     $fileDetails = pathinfo( $link );
     $dirname = strtolower( $fileDetails["dirname"] );
     $filename = strtolower( $fileDetails["filename"] );
     $extension = strtolower( $fileDetails["extension"] );
-    $output = $dirname . "/" . $filename . "." . $extension . "^" . filemtime( $file ) . "^." . $extension;
+    $output = $dirname . "/" . $filename . "." . $extension . "^" . $last_mod . "^." . $extension;
     return $output;
 }
 
@@ -39,6 +39,9 @@ class MinifyJsCss{
         $filepath = trim(str_replace( K_SITE_URL, "", $params[1]['rhs'] ));
         $output_file = ($filepath) ? K_SITE_DIR . $filepath : '';
         $output_link = ($filepath) ? K_SITE_URL . $filepath : '';
+        $last_mod = (is_file($output_file)) ? filemtime($output_file) : 0;
+        
+        //save tag attributes
         $i=0;
         foreach($params as $attribs){
             if($i > 1){
@@ -46,6 +49,7 @@ class MinifyJsCss{
             }
             $i++;
         }
+        
         //Add listed files to an array and sanitize
         foreach( $node->children as $child ){
             $file_list .= $child->get_HTML();
@@ -75,29 +79,20 @@ class MinifyJsCss{
                     $file = ltrim($file, '/');
             }
         if(!$files){return false;}
-        
-        if(defined('MINIFY_TIMESTAMP_FILENAME')){$output_link = minify_timestamp($output_link, $output_file);}
+                
+        if(defined('MINIFY_TIMESTAMP_FILENAME')){$output_link = minify_timestamp($output_link, $last_mod);}
         $css_tag = '<link rel="stylesheet" href="'.$output_link;
-        if(defined('MINIFY_TIMESTAMP_QUERYSTRING')){$css_tag .= '?'.filemtime($output_file);}
+        if(defined('MINIFY_TIMESTAMP_QUERYSTRING')){$css_tag .= '?'.$last_mod;}
         $css_tag .= '"'.$tag_attributes.' />';
         $js_tag = '<script type="text/javascript" src="'.$output_link;
-        if(defined('MINIFY_TIMESTAMP_QUERYSTRING')){$js_tag .= '?'.filemtime($output_file);}
+        if(defined('MINIFY_TIMESTAMP_QUERYSTRING')){$js_tag .= '?'.$last_mod;}
         $js_tag .= '"'.$tag_attributes.'></script>';
         
         //compare modification dates to output file
         if($output_file){
-            if(is_file($output_file)){
-                foreach($files as $item){
-                    if(is_file(K_SITE_DIR . $item)){
-                        if( filemtime(K_SITE_DIR . $item) > filemtime($output_file) ){
-                            if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
-                                $FUNCS->invalidate_cache();
-                            }
-                            $modified = 1;
-                            break;
-                        }
-                    }
-                    if ($item === '_|*KCODECHUNK*|_' && ( getlastmod() > filemtime($output_file) )){
+            foreach($files as $item){
+                if(is_file(K_SITE_DIR . $item)){
+                    if( filemtime(K_SITE_DIR . $item) > $last_mod ){
                         if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
                             $FUNCS->invalidate_cache();
                         }
@@ -105,8 +100,13 @@ class MinifyJsCss{
                         break;
                     }
                 }
-            }else{
-                $modified = 1;
+                if ($item === '_|*KCODECHUNK*|_' && ( getlastmod() > $last_mod )){
+                    if(defined('MINIFY_TIMESTAMP_FILENAME') || defined('MINIFY_TIMESTAMP_QUERYSTRING')){
+                        $FUNCS->invalidate_cache();
+                    }
+                    $modified = 1;
+                    break;
+                }
             }
             //No new modifications. Render 'link' or 'script' tag. Done.
             if (!$modified && $filetype == 'css'){
