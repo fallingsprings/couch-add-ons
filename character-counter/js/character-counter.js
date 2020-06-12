@@ -58,18 +58,34 @@ function instantiateCounter(my_counter) {
         
     //Add keyboard listener to target field
     my_counter.target.addEventListener('keyup', function () {
-        updateCounter(my_counter);
+        refreshCount(my_counter);
     });
     my_counter.target.addEventListener('keydown', function () {
-        updateCounter(my_counter);
+        refreshCount(my_counter);
     });
     
     //set up initial character count
-    updateCounter(my_counter);
+    buildCounter(my_counter);
 
 }
         
-function updateCounter(my_counter) {
+function buildCounter(my_counter) {
+    refreshCount(my_counter);
+    
+    //Show min and/or max
+    if (my_counter.min && (my_counter.show.indexOf('min') >= 0 || my_counter.show.indexOf('both') >= 0)) {
+        //show min
+        current_counter.innerHTML = 'Min: '+  my_counter.min + '&nbsp;&nbsp;&nbsp;' + current_counter.innerHTML;
+            }
+    if (my_counter.max && (my_counter.show.indexOf('max') >= 0 || my_counter.show.indexOf('both') >= 0)) {
+        //show max
+        current_counter.innerHTML = current_counter.innerHTML + '&nbsp;&nbsp;&nbsp;Max: ' + my_counter.max;
+    }
+    //show label
+    current_counter.innerHTML = my_counter.label + '&nbsp;' + current_counter.innerHTML;
+}
+
+function refreshCount(my_counter) {
     let current_counter = document.getElementById(my_counter.id);
     if (my_counter.type == 'up'){
         my_counter.count = my_counter.target.value.length; 
@@ -93,16 +109,7 @@ function updateCounter(my_counter) {
             current_counter.children[0].style.color = 'green';
         }       
     }
-    //Show min and/or max
-    if (my_counter.min && (my_counter.show.indexOf('min') >= 0 || my_counter.show.indexOf('both') >= 0)) {
-        //show min
-        current_counter.innerHTML = 'Min: '+  my_counter.min + '&nbsp;&nbsp;&nbsp;' + current_counter.innerHTML;
-            }
-    if (my_counter.max && (my_counter.show.indexOf('max') >= 0 || my_counter.show.indexOf('both') >= 0)) {
-        //show max
-        current_counter.innerHTML = current_counter.innerHTML + '&nbsp;&nbsp;&nbsp;Max: ' + my_counter.max;
-    }
-    current_counter.innerHTML = my_counter.label + '&nbsp;' + current_counter.innerHTML;
+    return current_counter;
 }
 
 my_counters.forEach(initCounter);
