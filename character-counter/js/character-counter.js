@@ -70,46 +70,48 @@ function instantiateCounter(my_counter) {
 }
         
 function buildCounter(my_counter) {
+    //create dynamic span for count
+    my_counter.element = document.getElementById(my_counter.id);
+    my_counter.element.innerHTML = '<span>' + my_counter.count + '</span>';
     refreshCount(my_counter);
     
-    //Show min and/or max
+    //create static text
+    //show min
     if (my_counter.min && (my_counter.show.indexOf('min') >= 0 || my_counter.show.indexOf('both') >= 0)) {
-        //show min
-        current_counter.innerHTML = 'Min: '+  my_counter.min + '&nbsp;&nbsp;&nbsp;' + current_counter.innerHTML;
+        my_counter.element.innerHTML = 'Min: '+  my_counter.min + '&nbsp;&nbsp;&nbsp;' + my_counter.element.innerHTML;
             }
+    //show max
     if (my_counter.max && (my_counter.show.indexOf('max') >= 0 || my_counter.show.indexOf('both') >= 0)) {
-        //show max
-        current_counter.innerHTML = current_counter.innerHTML + '&nbsp;&nbsp;&nbsp;Max: ' + my_counter.max;
+        my_counter.element.innerHTML = my_counter.element.innerHTML + '&nbsp;&nbsp;&nbsp;Max: ' + my_counter.max;
     }
     //show label
-    current_counter.innerHTML = my_counter.label + '&nbsp;' + current_counter.innerHTML;
+    my_counter.element.innerHTML = my_counter.label + '&nbsp;' + my_counter.element.innerHTML;
 }
 
 function refreshCount(my_counter) {
-    let current_counter = document.getElementById(my_counter.id);
+    //TODO:enforce_max
     if (my_counter.type == 'up'){
         my_counter.count = my_counter.target.value.length; 
     }else{
         my_counter.count = my_counter.max - my_counter.target.value.length;
     }
-    current_counter.innerHTML = '<span>' + my_counter.count + '</span>';
+    my_counter.element.children[0].innerHTML = my_counter.count;
 
     //Counter styles
     if (my_counter.type == 'up'){
         //count up
         if ((my_counter.max && my_counter.count > my_counter.max) || my_counter.count < my_counter.min){
-            current_counter.children[0].style.color = 'red';
+            my_counter.element.children[0].style.color = 'red';
         }else{
-            current_counter.children[0].style.color = 'green';
+            my_counter.element.children[0].style.color = 'green';
         }
     }else{ //count down
         if (my_counter.count < my_counter.min) {
-            current_counter.children[0].style.color = 'red';
+            my_counter.element.children[0].style.color = 'red';
         }else{
-            current_counter.children[0].style.color = 'green';
+            my_counter.element.children[0].style.color = 'green';
         }       
     }
-    return current_counter;
 }
 
 my_counters.forEach(initCounter);
