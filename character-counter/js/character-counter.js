@@ -1,3 +1,12 @@
+function counterLocalization(){
+    const LANG = {
+        warning: 'Maximum Length',
+        max: 'Max: ',
+        min: 'Min: '
+    }
+    return LANG;
+}
+
 function sanitize(my_counter) {
     my_counter.field = (!my_counter.field) ? '' : my_counter.field.trim();
     my_counter.repeatable = (!my_counter.repeatable) ? '' : my_counter.repeatable.trim();
@@ -32,7 +41,6 @@ function initCounter(my_counter) {
         if(!targets.length){
            //mutation observer instantiates new repeatable field when it is added dynamically
             const repeatable_observer = new MutationObserver(function() {
-                alert('Mutation!');
             let targets = repeatable.querySelectorAll(my_selector);
             let target = targets.item(0);
                 initRepeatable(my_counter, target);
@@ -72,6 +80,9 @@ function initRepeatable(my_counter, target){
 }
 
 function instantiateCounter(my_counter) {
+    const LANG = counterLocalization();
+    console.log(LANG);
+    
     //Add keyboard listener to target field
     my_counter.target.addEventListener('keyup', function () {
         refreshCount(my_counter);
@@ -94,18 +105,18 @@ function instantiateCounter(my_counter) {
     //create static text
     //show min
     if (my_counter.min && (my_counter.show.indexOf('min') >= 0 || my_counter.show.indexOf('both') >= 0)) {
-        my_counter.element.innerHTML = `Min: ${my_counter.min}&nbsp;&nbsp;&nbsp;${my_counter.element.innerHTML}`;
+        my_counter.element.innerHTML = `${LANG.min} ${my_counter.min} &nbsp; ${my_counter.element.innerHTML}`;
             }
     //show max
     if (my_counter.max && (my_counter.show.indexOf('max') >= 0 || my_counter.show.indexOf('both') >= 0)) {
-        my_counter.element.innerHTML = `${my_counter.element.innerHTML}&nbsp;&nbsp;&nbsp;Max: ${my_counter.max}`;
+        my_counter.element.innerHTML = `${my_counter.element.innerHTML}&nbsp;&nbsp;&nbsp;${LANG.max} ${my_counter.max}`;
     }
     //show label
     my_counter.element.innerHTML = `${my_counter.label} ${my_counter.element.innerHTML}`;
     
     //create dynamic span for warning
     if(my_counter.enforce_max){
-        my_counter.element.innerHTML = `<span style="color:red;">Maximum length</span> ${my_counter.element.innerHTML}`;
+        my_counter.element.innerHTML = `<span style="color:red;">${LANG.warning}</span> ${my_counter.element.innerHTML}`;
     }
     
     //identify counter span and warning span
@@ -140,13 +151,18 @@ function refreshCount(my_counter) {
         //count up
         if ((my_counter.max && my_counter.count > my_counter.max) || my_counter.count < my_counter.min){
             my_counter.counter.style.color = 'red';
+        }else if (my_counter.max && my_counter.count > my_counter.max * .9){
+            my_counter.counter.style.color = 'darkorange';
         }else{
             my_counter.counter.style.color = 'green';
         }
     }else{ 
         //count down
-        if (my_counter.count < my_counter.min) {
+        if (my_counter.min && my_counter.target.value.length < my_counter.min || my_counter.count < 0) {
+            console.log('red?');
             my_counter.counter.style.color = 'red';
+        }else if(my_counter.target.value.length > my_counter.max *.9){
+            my_counter.counter.style.color = 'darkorange';
         }else{
             my_counter.counter.style.color = 'green';
         }       

@@ -1,9 +1,9 @@
 # Character Counter
 ## Add Character Counters to Fields in the Admin Panel
 
-This custom tag allows you to attach character counters of different kinds to any field in the Couch Admin Panel. The tag can set any number of counters with several different types available. They can be a useful tool for seo and meta tags, or anywhere the editor needs to be aware of the constraints on a text region.
+This custom tag allows you to attach character counters of different kinds to any field in the Couch Admin Panel. The tag can set any number of counters with several different types available. They can be a useful tool for SEO and meta tags, or anywhere the editor needs to be aware of the constraints on a text region.
 
-The tag itself is essentially a container for the javascript code that creates the counters. It is meant to be added to the new 'cms:script' tag nested inside the 'cms:config_form_view' tag. It can share the space with other custom javascript.
+The tag itself is essentially a container for the javascript code that creates the counters. It is meant to be added to the 'cms:script' tag nested inside the 'cms:config_form_view' tag in your template. It can share the space with other custom javascript.
 
     <cms:config_form_view>
     	<cms:script>
@@ -18,18 +18,19 @@ Parameters for counters are nested inside of the 'cms:character_counter' tag. Th
 
     { repeatable:'my_repeatable', editable:'my_editable' }    
 
-You can also add a **min** or **max** limit to the counter. This won't actually limit the number of characters, but the counter will turn red when it's out of range.
+You can also add a **min** or **max** limit to the counter. This won't actually limit the number of characters, but the counter will turn red when it's out of range. Use the **enforce_max** parameter to actively limit the number of characters allowed.
 
     <cms:character_counter>
         { repeatable:'my_repeatable', editable:'my_editable' }, 
-        { editable:'twitter_style', max:140 } 
+        { editable:'countdown_style', max:140 }, 
+        { editable:'strict_counter', max:140, enforce_max:true } 
     </cms:character_counter>
         	
-Notice that two different counters are set in the same tag. You can set any number of counters at the same time. Don't forget the comma between different counters.
+Notice that multiple counters are set in the same tag. You can set any number of counters at the same time. _Don't forget the comma between different counters_.
 
-By default, the counter becomes a twitter-style countdown counter when a 'max' limit is specified, counting down from the 'max' value. You can change that with the 'type' parameter.
+By default, the counter becomes a countdown counter when a 'max' limit is specified, counting down from the 'max' value. You can change that with the 'type' parameter.
 
-    { editable:'not_twitter', max:140, type:'up' } 
+    { editable:'not_countdown', max:140, type:'up' } 
     
 Additionally, you can choose to show the min and/or max value alongside the counter, or add a label.
 
@@ -54,7 +55,7 @@ Older versions of Couch don't have v2.0's custom admin features, but as mentione
 
 ###On the Front End
 
-You can even use this script on the front end of your website if you happen to need a character counter for a field. Just place it inside a script tag, preferably at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter.
+You can even use this script on the front end of your website if you happen to need a character counter for a field. Just place it inside a script tag at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter on the front_end. the character counter's id is the target id with '_counter' appended.
 
     <script type="text/javascript">
         <cms:character_counter>
@@ -71,6 +72,8 @@ You can even use this script on the front end of your website if you happen to n
 **max** -  maximum count
 
 **min** -  minimum count
+
+**enforce_max** - strictly enforces the _max_ parameter, clipping off any characters above the maximum limit. Give it any true value.
 
 **type** - either 'up' or 'down'
 - When the 'max' parameter is set, the default is a countdown counter.	
