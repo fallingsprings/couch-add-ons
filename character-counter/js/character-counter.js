@@ -106,7 +106,7 @@ function instantiateCounter(my_counter) {
     //show min
     if (my_counter.min && (my_counter.show.indexOf('min') >= 0 || my_counter.show.indexOf('both') >= 0)) {
         my_counter.element.innerHTML = `${LANG.min} ${my_counter.min} &nbsp; ${my_counter.element.innerHTML}`;
-            }
+     }
     //show max
     if (my_counter.max && (my_counter.show.indexOf('max') >= 0 || my_counter.show.indexOf('both') >= 0)) {
         my_counter.element.innerHTML = `${my_counter.element.innerHTML}&nbsp;&nbsp;&nbsp;${LANG.max} ${my_counter.max}`;
