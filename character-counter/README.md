@@ -40,7 +40,7 @@ Additionally, you can choose to show the min and/or max value alongside the coun
         { editable:'super_fancy', min:35, max:500, type:'up', show:'both', label:'Character Count:' } 
     </cms:character_counter>
 
-###Older Versions of Couch
+### Older Versions of Couch
 
 Older versions of Couch don't have v2.0's custom admin features, but as mentioned, the tag is just a container for the script. For older versions of Couch you can use a message-type editable region to deliver the script.
 
@@ -53,7 +53,7 @@ Older versions of Couch don't have v2.0's custom admin features, but as mentione
     	</script>
     </cms:editable>
 
-###On the Front End
+### On the Front End
 
 You can even use this script on the front end of your website if you happen to need a character counter for a field. Just place it inside a script tag at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter on the front_end. the character counter's id is the target id with '_counter' appended.
 
@@ -63,7 +63,7 @@ You can even use this script on the front end of your website if you happen to n
         </cms:character_counter>
     </script>
 
-###Parameters:
+### Parameters:
 
 **repeatable** - name of the repeatable region
 
