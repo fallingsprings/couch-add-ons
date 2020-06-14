@@ -29,6 +29,7 @@ function initCounter(my_counter) {
         //instantiate counter for editable field or front-end field    
         let field_name = (my_counter.field) || `f_${my_counter.editable}`;
         my_counter.target = document.getElementById(field_name);
+        console.log(field_name);
         instantiateCounter(my_counter);
     }else{
         //dynamic repeatable regions
@@ -81,7 +82,6 @@ function initRepeatable(my_counter, target){
 
 function instantiateCounter(my_counter) {
     const LANG = counterLocalization();
-    console.log(LANG);
     
     //Add keyboard listener to target field
     my_counter.target.addEventListener('keyup', function () {
@@ -106,7 +106,7 @@ function instantiateCounter(my_counter) {
     //show min
     if (my_counter.min && (my_counter.show.indexOf('min') >= 0 || my_counter.show.indexOf('both') >= 0)) {
         my_counter.element.innerHTML = `${LANG.min} ${my_counter.min} &nbsp; ${my_counter.element.innerHTML}`;
-     }
+            }
     //show max
     if (my_counter.max && (my_counter.show.indexOf('max') >= 0 || my_counter.show.indexOf('both') >= 0)) {
         my_counter.element.innerHTML = `${my_counter.element.innerHTML}&nbsp;&nbsp;&nbsp;${LANG.max} ${my_counter.max}`;
@@ -159,7 +159,6 @@ function refreshCount(my_counter) {
     }else{ 
         //count down
         if (my_counter.min && my_counter.target.value.length < my_counter.min || my_counter.count < 0) {
-            console.log('red?');
             my_counter.counter.style.color = 'red';
         }else if(my_counter.target.value.length > my_counter.max *.9){
             my_counter.counter.style.color = 'darkorange';
