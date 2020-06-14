@@ -29,7 +29,6 @@ function initCounter(my_counter) {
         //instantiate counter for editable field or front-end field    
         let field_name = (my_counter.field) || `f_${my_counter.editable}`;
         my_counter.target = document.getElementById(field_name);
-        console.log(field_name);
         instantiateCounter(my_counter);
     }else{
         //dynamic repeatable regions
