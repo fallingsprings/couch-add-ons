@@ -86,7 +86,7 @@ You can even use this script on the front end of your website if you happen to n
 
 	{ editable:'lets-go-crazy', label:'<strong style="color:purple;">Character Count:</strong>' }
 
-###Installing the Add-On
+### Installing the Add-On
 
 To use this tag, unzip and add the folder to your 'couch/addons' directory. Initiate the tag in 'couch/addons/k_functions.php'.
 
