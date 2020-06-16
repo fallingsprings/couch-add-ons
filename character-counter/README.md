@@ -55,7 +55,7 @@ Older versions of Couch don't have v2.0's custom admin features, but as mentione
 
 ### On the Front End
 
-You can even use this script on the front end of your website if you happen to need a character counter for a field. Just place it inside a script tag at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter on the front_end. the character counter's id is the target id with '_counter' appended.
+You can even use this script on the front end of your website if you happen to need a character counter for a field. Just place it inside a script tag at the bottom of your template. For your front end fields, use the 'field' parameter instead of 'editable' to target the id of the field you want to target. You may need additional css to style the counter on the front_end. The character counter's id is the target id with '_counter' appended.
 
     <script type="text/javascript">
         <cms:character_counter>
@@ -85,6 +85,14 @@ You can even use this script on the front end of your website if you happen to n
 - Pro-tip: use html to dress up your label: 
 
 	{ editable:'lets-go-crazy', label:'<strong style="color:purple;">Character Count:</strong>' }
+    
+### Localization:
+
+You can localize or customize the language for the add-on by adding parameters to the Couch tag. The defaults are:
+
+    <cms:character_counter lang_warning="Maximum Reached" lang_max="Max: " lang_min="Min: ">
+        { editable:'strict_counter', max:140, min:20, enforce_max:true } 
+    </cms:character_counter>
 
 ### Installing the Add-On
 
