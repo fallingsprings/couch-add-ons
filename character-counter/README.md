@@ -79,7 +79,7 @@ You can even use this script on the front end of your website if you happen to n
 - When the 'max' parameter is set, the default is a countdown counter.	
 - You can't use a countdown type without setting the 'max' parameter.
 	
-**show** - an option to show the max and/or min count along with the counter. Valid options include 'max', 'min', 'both', 'min max', 'max min', 'MiniMax', or 'Maxine has a really min cat'.
+**show** - an option to show the max and/or min count along with the counter. Valid options include 'max', 'min', 'both', 'min max'.
 
 **label** - applies a text label to the counter.
 - Pro-tip: use html to dress up your label: 
@@ -91,7 +91,7 @@ You can even use this script on the front end of your website if you happen to n
 You can localize or customize the language for the add-on by adding parameters to the Couch tag. The defaults are:
 
     <cms:character_counter lang_warning="Maximum Reached" lang_max="Max: " lang_min="Min: ">
-        { editable:'strict_counter', max:140, min:20, enforce_max:true } 
+        { editable:'strict_counter', max:140, min:20, show:'min max', enforce_max:true } 
     </cms:character_counter>
 
 ### Installing the Add-On
