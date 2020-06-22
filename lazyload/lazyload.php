@@ -1,6 +1,6 @@
 <?php
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
-define(LAZYLOAD_TRIGGER, 'lazyload');
+define('LAZYLOAD_TRIGGER', 'lazyload');
 
 class LazyLoad{            
     static function lazy_load( $params, $node ){        

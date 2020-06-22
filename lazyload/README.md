@@ -11,7 +11,7 @@ I've chosen to use _lazysizes.js_ (https://github.com/aFarkas/lazysizes) with th
 
 All lazy-load scripts work on the same principle, so this pre-processor can be made to work with other scripts. For images and iframes, the only difference may be the class name that triggers lazy loading (audio and video may be more complicated). This module uses "lazyload" as the trigger. You can either configure the trigger class in your lazy-load script, or change the trigger definition in _lazyload.php_.
 
-    define(LAZYLOAD_TRIGGER, 'lazyload');
+    define('LAZYLOAD_TRIGGER', 'lazyload');
 
 ### Usage
 Include the lazy load script(s) on the web page. The _ls.unveilhooks.min.js_ script is a plugin for `<audio>` or `<video>` tags. It's not needed unless you're using it for those tags.
