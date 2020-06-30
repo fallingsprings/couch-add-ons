@@ -31,7 +31,7 @@ class EmailGuardian {
 
     for ($i=0; $i < strlen($str); $i++){
       if(strpos($secret_decoder_ring, $str[$i]) === false ){
-        //return the character if it' not on the decoder ring
+        //return the character if it's not on the decoder ring
         $newStr .= $str[$i];
         }else{
           //offset by randomly generated key, wrapping around at the end
@@ -39,9 +39,13 @@ class EmailGuardian {
           $newStr .= $secret_decoder_ring[$j];
       }
     }
+    $tmp='';
+    for($i = mb_strlen($newStr); $i >= 0; $i--){
+      $tmp .= mb_substr($newStr, $i, 1);
+    }
     //package it for the trip to the front end
-    $newStr = addslashes(strrev($newStr));    
-    return $newStr;
+    $newStr = addslashes($tmp);    
+return $newStr;
   }
   
   static function email_guardian( $params, $node ){
@@ -56,7 +60,6 @@ class EmailGuardian {
     foreach( $node->children as $child ){
       $html .= $child->get_HTML();
     }
-    
     $secret_decoder_ring = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ/<>!:.@#$%*abcdefghijklmnopqrstuvwxyz "; 
     $guardhouse = '';
       
@@ -68,6 +71,7 @@ class EmailGuardian {
       //so multiple instances don't repeat this step
       if ( !defined('DECIPHER_FUNCTION_INJECTED')) {
         define( 'DECIPHER_FUNCTION_INJECTED', '1' );
+        //injects the deciphering function on the front end
         $html = EmailGuardian::init_guardian( $html, $secret_decoder_ring );
       }
       
@@ -84,16 +88,15 @@ class EmailGuardian {
         
         //encipher link
         $link = EmailGuardian::encipher_email($key, $link, $secret_decoder_ring);
-        
         //build the JS array for the front end
         $guardhouse .= "guardHouse.push([document.getElementById('" . $id . "'), " . $key . ", '" . $link . "']);";
       }
     }
     
-    //Do free floating emails after mailto links are processed. 
+    //Do free floating emails separately after mailto links are processed. 
     //Otherwise they get tangled together.
     //Discover free floating email addresses
-    preg_match_all('/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,4}\b/', $html, $free_floating_emails);
+    preg_match_all('/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,4}\b', $html, $free_floating_emails);
     if($free_floating_emails[0]){
       $floaters = array();
       //if 'create_links' is on, build a mailto link
@@ -111,6 +114,7 @@ class EmailGuardian {
       //so multiple instances don't repeat this step
       if ( !defined('DECIPHER_FUNCTION_INJECTED')) {
         define( 'DECIPHER_FUNCTION_INJECTED', '1' );
+        //injects the deciphering function on the front end
         $html = EmailGuardian::init_guardian( $html, $secret_decoder_ring );
       }
 
@@ -133,7 +137,7 @@ class EmailGuardian {
       }
     }
     
-    //script to decipher emails on the front end
+    //script that deciphers obfuscated emails on the front end
     $decipher = "\n<script>";
     $decipher .= $guardhouse;
     $decipher .= "for(let cipher of guardHouse){";
