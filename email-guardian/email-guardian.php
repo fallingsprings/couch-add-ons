@@ -96,7 +96,7 @@ return $newStr;
     //Do free floating emails separately after mailto links are processed. 
     //Otherwise they get tangled together.
     //Discover free floating email addresses
-    preg_match_all('/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[A-Za-z]{2,4}\b/', $html, $free_floating_emails);
+    preg_match_all('/[\w._%+-]+@[\w.-]+\w{2,4}/u', $html, $free_floating_emails);
     if($free_floating_emails[0]){
       $floaters = array();
       //if 'create_links' is on, build a mailto link
