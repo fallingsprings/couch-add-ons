@@ -12,3 +12,10 @@ function decipherEmail(key, str, characterSet) {
   newStr = newStr.split("").reverse().join("");
   return newStr;
 }
+function injectEmail(guardHouse, characterSet){
+  for(let cipher of guardHouse){
+    let decipheredLink = decipherEmail(cipher[1], cipher[2], characterSet);
+    cipher[0].insertAdjacentHTML('afterend', decipheredLink);
+    cipher[0].parentNode.removeChild(cipher[0]);
+  }
+}

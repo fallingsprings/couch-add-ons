@@ -4,55 +4,66 @@ class EmailGuardian {
   // Email Guardian
   // https://www.couchcms.com/forum/viewtopic.php?f=8&t=11001
 
-  function init_guardian( $html, $secret_decoder_ring ){
-    //inject decipher function
-    $inject_decipher_function = "\n<script>" . file_get_contents(__DIR__.'/decipher.min.js');
-    //inject array for emails and keys
-    $inject_decipher_function .= 'var guardHouse=[],';
-    $inject_decipher_function .= "decipheredLink = '',";
-    $inject_decipher_function .= "characterSet = '" . $secret_decoder_ring . "';";
-    $inject_decipher_function .= '</script>';
-    $html = $inject_decipher_function . "\n" . $html;
-    return $html;
+  static function replace_with_span( $html, $email, $id, $no_script_message ){
+    $span = "<span id='" . $id . "'>" . $no_script_message . "</span>";
+    return preg_replace('/'.preg_quote($email, '/') .'/', $span, $html, 1);
   }
   
-  function replace_with_span( $html, $link, $id ){
-    $pos = strpos($html, $link);
-    $span = "<span id='" . $id . "'></span>";
-    if ($pos !== false) {
-      $html = substr_replace($html, $span, $pos, strlen($link));
-    }
-    return $html;    
-  }
-  
-  function encipher_email( $key, $str, $secret_decoder_ring ){
-    $newStr='';
+  static function obfuscate_email( $email, $key, $secret_decoder_ring ){
+    $obfuscatedEmail='';
     $j=0;
 
-    for ($i=0; $i < strlen($str); $i++){
-      if(strpos($secret_decoder_ring, $str[$i]) === false ){
+    for ($i=0; $i < strlen($email); $i++){
+      if(strpos($secret_decoder_ring, $email[$i]) === false ){
         //return the character if it's not on the decoder ring
-        $newStr .= $str[$i];
+        $obfuscatedEmail .= $email[$i];
         }else{
           //offset by randomly generated key, wrapping around at the end
-          $j = (strpos($secret_decoder_ring, $str[$i]) + $key > strlen($secret_decoder_ring) - 1) ? strpos($secret_decoder_ring, $str[$i]) + $key - strlen($secret_decoder_ring) : strpos($secret_decoder_ring, $str[$i]) + $key;
-          $newStr .= $secret_decoder_ring[$j];
+          $j = (strpos($secret_decoder_ring, $email[$i]) + $key > strlen($secret_decoder_ring) - 1) ? strpos($secret_decoder_ring, $email[$i]) + $key - strlen($secret_decoder_ring) : strpos($secret_decoder_ring, $email[$i]) + $key;
+          $obfuscatedEmail .= $secret_decoder_ring[$j];
       }
     }
+    //reverse the order
     $tmp='';
-    for($i = mb_strlen($newStr); $i >= 0; $i--){
-      $tmp .= mb_substr($newStr, $i, 1);
+    for($i = mb_strlen($obfuscatedEmail); $i >= 0; $i--){
+      $tmp .= mb_substr($obfuscatedEmail, $i, 1);
     }
     //package it for the trip to the front end
-    $newStr = addslashes($tmp);    
-return $newStr;
+    $obfuscatedEmail = addslashes($tmp);    
+return $obfuscatedEmail;
   }
   
-  static function email_guardian( $params, $node ){
+  static function init_functions( ){
+    //inject decipher function
+    return "\n<script>" . file_get_contents(__DIR__.'/decipher.min.js');
+  }
+  
+  static function init_variables( $guardhouse , $secret_decoder_ring ){
+    $script .= "var decipheredLink = '',";
+    $script .= "characterSet = '" . $secret_decoder_ring . "';";
+    $script .= "var guardHouse = [";
+    foreach($guardhouse as $item){
+      $script .= "[document.getElementById('" . $item['id'] . "'), ".$item['key'].", '".$item['cipher']."'],";
+    }
+    $script .= "];";
+    return $script;
+  }
+  
+  static function refresh_guardhouse( $guardhouse ){
+    //empty guardHouse of already injected emails and push new
+    $script = "\n<script>";
+    $script .= "guardHouse = [];";
+    foreach($guardhouse as $item){
+      $script .= "guardHouse.push([document.getElementById('" . $item['id'] . "'), " . $item['key'] . ", '" . $item['cipher'] . "']);";
+    }
+    return $script;
+  }
+  
+  static function email_guardian_handler( $params, $node ){
     global $FUNCS;
     extract( $FUNCS->get_named_vars(
       array(
-            'no_script_message'=>'Please enable JavaScript to see this email address.', 
+            'no_script_message'=>'(Please enable JavaScript to view this email address)', 
             'create_links' =>'1'
             ),
       $params)
@@ -61,44 +72,35 @@ return $newStr;
       $html .= $child->get_HTML();
     }
     $secret_decoder_ring = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ/<>!:.@#$%*abcdefghijklmnopqrstuvwxyz "; 
-    $guardhouse = '';
+    $guardhouse = [];
       
     //discover mailto links
     preg_match_all('/<a\s+(href\s?=.*?)(mailto:.*?)a>/', $html, $mailto_links);
     
-    //encipher mailto links
     if ( $mailto_links[0] ){ 
-      //so multiple instances don't repeat this step
-      if ( !defined('DECIPHER_FUNCTION_INJECTED')) {
-        define( 'DECIPHER_FUNCTION_INJECTED', '1' );
-        //injects the deciphering function on the front end
-        $html = EmailGuardian::init_guardian( $html, $secret_decoder_ring );
-      }
-      
-      // replace and encipher link
-      foreach($mailto_links[0] as $link){
+      // replace and encipher each link
+      foreach($mailto_links[0] as $email){
         //generate an id
         $id  = 'v' . $FUNCS->generate_key( 15 );
         
         //replace link with an empty span
-        $html = EmailGuardian::replace_with_span($html, $link, $id);        
+        $html = EmailGuardian::replace_with_span($html, $email, $id, $no_script_message);        
         
         //generate random key
         $key = rand(1, strlen($secret_decoder_ring) -1 );
         
         //encipher link
-        $link = EmailGuardian::encipher_email($key, $link, $secret_decoder_ring);
-        //build the JS array for the front end
-        $guardhouse .= "guardHouse.push([document.getElementById('" . $id . "'), " . $key . ", '" . $link . "']);";
+        $cipher = EmailGuardian::obfuscate_email($email, $key, $secret_decoder_ring);
+        
+        //store everything in the guardhouse
+        $guardhouse[] = ["id"=>$id, "key"=>$key, "cipher"=>$cipher];
       }
     }
-    
-    //Do free floating emails separately after mailto links are processed. 
-    //Otherwise they get tangled together.
+       
     //Discover free floating email addresses
-    preg_match_all('/[\w._%+-]+@[\w.-]+\w{2,4}/u', $html, $free_floating_emails);
+    preg_match_all('/([\S]|[\"].* .*[\"])+@[\w.&;%-]+\w{2,4}/u', strip_tags($html), $free_floating_emails);
     if($free_floating_emails[0]){
-      $floaters = array();
+      $floaters = [];
       //if 'create_links' is on, build a mailto link
       foreach($free_floating_emails[0] as $email){
         if($create_links){
@@ -108,48 +110,41 @@ return $newStr;
           $floaters[] = $email;
         }
       }
-    }
-    //encipher free floating addresses
-    if ( $free_floating_emails[0] ){ 
-      //so multiple instances don't repeat this step
-      if ( !defined('DECIPHER_FUNCTION_INJECTED')) {
-        define( 'DECIPHER_FUNCTION_INJECTED', '1' );
-        //injects the deciphering function on the front end
-        $html = EmailGuardian::init_guardian( $html, $secret_decoder_ring );
-      }
-
-      // replace and encipher free floating email
-      foreach($floaters as $link){
+      // replace and encipher free floating email addresses
+      foreach($floaters as $email){
         //generate an id
         $id  = 'v' . $FUNCS->generate_key( 15 );
         //replace original email address with an empty span
-        //matches even if email was converted to mailto tag
-        $html = EmailGuardian::replace_with_span($html, $free_floating_emails[0][array_search($link, $floaters)] , $id);        
-
+        //matching the original string in case email was converted to mailto tag
+        $html = EmailGuardian::replace_with_span($html, $free_floating_emails[0][array_search($email, $floaters)] , $id, $no_script_message);        
         //generate random key
         $key = rand(1, strlen($secret_decoder_ring) -1 );
 
         //encipher link
-        $link = EmailGuardian::encipher_email($key, $link, $secret_decoder_ring);
-
-        //build the JS array for the front end
-        $guardhouse .= "guardHouse.push([document.getElementById('" . $id . "'), " . $key . ", '" . $link . "']);";
+        $cipher = EmailGuardian::obfuscate_email($email, $key, $secret_decoder_ring);
+        //store everything in the guardhouse
+        $guardhouse[] = ["id"=>$id, "key"=>$key, "cipher"=>$cipher];
       }
     }
     
-    //script that deciphers obfuscated emails on the front end
-    $decipher = "\n<script>";
-    $decipher .= $guardhouse;
-    $decipher .= "for(let cipher of guardHouse){";
-    $decipher .= "decipheredLink = decipherEmail(cipher[1], cipher[2], characterSet);";
-    $decipher .= "cipher[0].innerHTML = decipheredLink;";  
-    $decipher .= "}";
-    //empty guardHouse in case of multiple tags on the page
-    $decipher .= "guardHouse = [];";  
-    $decipher .= "</script>\n";
-    $html .= $decipher;
-    return $html;
+    //create and inject script
+    if ( $guardhouse ){
+      if ( !defined('DECIPHER_FUNCTION_INJECTED')) {
+        define( 'DECIPHER_FUNCTION_INJECTED', '1' );
+        //inject the deciphering functions and variables on the front end
+        $script = EmailGuardian::init_functions();
+        $script .= EmailGuardian::init_variables( $guardhouse, $secret_decoder_ring );
+      }else{
+        //functions and declarations already injected in previous script
+        //so empty array and push new items
+        $script .= EmailGuardian::refresh_guardhouse( $guardhouse );
+      }
+      $script .= "injectEmail(guardHouse, characterSet);";
+      $script .= "</script>\n";
+      $html .= $script;
+      return $html;
+    }
   }
 }
 
-$FUNCS->register_tag( 'email_guardian', array('EmailGuardian', 'email_guardian') );
+$FUNCS->register_tag( 'email_guardian', array('EmailGuardian', 'email_guardian_handler') );
