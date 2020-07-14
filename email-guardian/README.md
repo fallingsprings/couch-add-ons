@@ -13,7 +13,7 @@ You can wrap an entire page with the tag or use multiple tags to wrap specific c
 
 ### Parameters:
 
-**no_script_message** - In cases where Javascript is disabled, this message will be displayed instead of the expected content. The default is 'Please enable JavaScript to see this email address.'
+**no_script_message** - With Javascript disabled, this message will be displayed instead of the expected content. The default is 'JavaScript required to see this email address.'
 
 **create_links** -  For free floating plaintext email addresses, the Email Guardian helpfully converts the address to a clickable mailto link. To turn off this feature and simply obfuscate text email addresses without converting them, set create_links="0".
 
