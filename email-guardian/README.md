@@ -4,7 +4,7 @@
 Simply wrap any code with the _email_guardian_ tag to find and obfuscate email addresses.
 
     <cms:email_guardian>
-    	<cms:show my_blog_post>
+    	<cms:show my_blog_post />
     </cms:email_guardian>
 
 The _email_guardian_ tag will find all plain text email addresses and mailto links, obfuscating them by using a cipher with a random key and reversing the order of characters to hide them from spambots. A JavaScript routine then decodes them for displaying normally on the page.
