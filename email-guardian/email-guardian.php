@@ -1,5 +1,6 @@
 <?php
 if ( !defined('K_COUCH_DIR') ) die(); // cannot be loaded directly
+
 class EmailGuardian {   
   // Email Guardian
   // https://www.couchcms.com/forum/viewtopic.php?f=8&t=11001
@@ -9,19 +10,19 @@ class EmailGuardian {
     return preg_replace('/'.preg_quote($email, '/') .'/', $span, $html, 1);
   }
   
-  static function obfuscate_email( $email, $key, $secret_decoder_ring ){
+  static function obfuscate_email( $email, $random_key, $secret_decoder_ring ){
     $obfuscatedEmail='';
     $j=0;
     //obfuscate non-ASCII characters by encoding them
     $email = json_encode($email);
-
+    //create cipher using random key
     for ($i=0; $i < strlen($email); $i++){
       if(strpos($secret_decoder_ring, $email[$i]) === false ){
         //return the character itself if it's not on the decoder ring
         $obfuscatedEmail .= $email[$i];
         }else{
           //offset by randomly generated key, wrapping around at the end
-          $j = (strpos($secret_decoder_ring, $email[$i]) + $key > strlen($secret_decoder_ring) - 1) ? strpos($secret_decoder_ring, $email[$i]) + $key - strlen($secret_decoder_ring) : strpos($secret_decoder_ring, $email[$i]) + $key;
+          $j = (strpos($secret_decoder_ring, $email[$i]) + $random_key > strlen($secret_decoder_ring) - 1) ? strpos($secret_decoder_ring, $email[$i]) + $random_key - strlen($secret_decoder_ring) : strpos($secret_decoder_ring, $email[$i]) + $random_key;
           $obfuscatedEmail .= $secret_decoder_ring[$j];
       }
     }
@@ -85,20 +86,20 @@ class EmailGuardian {
         $html = EmailGuardian::replace_with_span($html, $email, $id, $no_script_message);        
         
         //generate random key
-        $key = rand(1, strlen($secret_decoder_ring) -1 );
+        $random_key = rand(1, strlen($secret_decoder_ring) -1 );
         
         //encipher link
-        $cipher = EmailGuardian::obfuscate_email($email, $key, $secret_decoder_ring);
+        $cipher = EmailGuardian::obfuscate_email($email, $random_key, $secret_decoder_ring);
         
         //store everything in the guardhouse
-        $guardhouse[] = ["id"=>$id, "key"=>$key, "cipher"=>$cipher];
+        $guardhouse[] = ["id"=>$id, "key"=>$random_key, "cipher"=>$cipher];
       }
     }
        
     //Discover free floating email addresses
     //broad regex to identify, not validate
-    //try not to accidentally catch @handles => (?<![\<\>\[\]\{\}\(\)\/.,!:*+=-])@
-    preg_match_all('/([\S]|[\"].* .*[\"])+(?<![\<\>\[\]\{\}\(\)\/.,!:*+=-])@[\w.&;%-]+\w{2,4}/u', $html, $free_floating_emails);
+    //trying not to accidentally catch @handles => (?<![\<\>\[\]\{\}\(\)\/.,!:*+=-])@
+    preg_match_all('/([\S]|[\"].* .*[\"])+(?<![\<\>\[\]\{\}\(\)\/.,!:*+=-])@[\w.&;%-]+\w{2,4}/u', strip_tags($html), $free_floating_emails);
     if($free_floating_emails[0]){
       $floaters = [];
       //if 'create_links' is on, build a mailto link
@@ -118,23 +119,23 @@ class EmailGuardian {
         //match to the original string - email may have been converted to mailto tag
         $html = EmailGuardian::replace_with_span($html, $free_floating_emails[0][array_search($email, $floaters)] , $id, $no_script_message);        
         //generate random key
-        $key = rand(1, strlen($secret_decoder_ring) -1 );
+        $random_key = rand(1, strlen($secret_decoder_ring) -1 );
 
         //encipher link
-        $cipher = EmailGuardian::obfuscate_email($email, $key, $secret_decoder_ring);
+        $cipher = EmailGuardian::obfuscate_email($email, $random_key, $secret_decoder_ring);
         //store everything in the guardhouse
-        $guardhouse[] = ["id"=>$id, "key"=>$key, "cipher"=>$cipher];
+        $guardhouse[] = ["id"=>$id, "key"=>$random_key, "cipher"=>$cipher];
       }
     }
     
-    //create and inject script
+    //create and inject the front end script
     if ( $guardhouse ){
       if ( !defined('DECIPHER_FUNCTION_INJECTED') ) {
         define( 'DECIPHER_FUNCTION_INJECTED', '1' );
         //inject the deciphering functions and variables on the front end
         $script = EmailGuardian::init_js( $guardhouse, $secret_decoder_ring );
       }else{
-        //functions and declarations already injected in previous script
+        //functions and variables already injected in previous script
         //so empty array and push new items
         $script = EmailGuardian::refresh_guardhouse( $guardhouse );
       }
