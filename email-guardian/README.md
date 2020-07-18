@@ -1,5 +1,5 @@
 # Email Guardian
-## Obfuscate All Email Addresses Automatically
+## Automatically Obfuscate All Email Addresses
 
 Simply wrap any code with the _email_guardian_ tag to find and obfuscate email addresses.
 
