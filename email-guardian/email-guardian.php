@@ -42,7 +42,7 @@ class EmailGuardian {
     $script .= "characterSet='" . $secret_decoder_ring . "',";
     $script .= "guardHouse=[";
     foreach($guardhouse as $item){
-      $script .= "[document.getElementById('" . $item['id'] . "'),".$item['key'].",'".$item['cipher']."'],";
+      $script .= "[document.getElementById('" . $item['id'] . "')," . $item['key'] . ",'" . $item['cipher'] . "'],";
     }
     $script .= "];";
     return $script;
@@ -74,7 +74,7 @@ class EmailGuardian {
     $guardhouse = [];
     
     //discover mailto links
-    preg_match_all('/<a\s+(href\s?=.*?)(mailto:.*?)a>/', $html, $mailto_links);
+    preg_match_all('/<a\s+(href\s?=.*?)(mailto:.*?)a>/s', $html, $mailto_links);
     
     if ( $mailto_links[0] ){ 
       // replace and encipher each link
