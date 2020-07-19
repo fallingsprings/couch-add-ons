@@ -74,7 +74,7 @@ class EmailGuardian {
     $guardhouse = [];
     
     //discover mailto links
-    preg_match_all('/<a\s+(href\s?=.*?)(mailto:.*?)a>/', $html, $mailto_links);
+    preg_match_all('/<a\s+(href\s?=.*?)(mailto:.*?)a>/s', $html, $mailto_links);
     
     if ( $mailto_links[0] ){ 
       // replace and encipher each link
