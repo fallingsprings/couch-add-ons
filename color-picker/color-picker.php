@@ -10,11 +10,15 @@
             $attr = $FUNCS->get_named_vars(
                         array(
                               'color'=>'#ffffff',
+                              'field_width'=>'100%',
+                              'field_height'=>'',
                              ),
                         $params);
 
-            //sanitize color value.
+            //sanitize parameters.
             $attr['color'] = strtolower( trim($attr['color']) );
+            $attr['field_width'] = strtolower( trim($attr['field_width']) );
+            $attr['field_height'] = strtolower( trim($attr['field_height']) );
             $pattern = '/^#([a-f0-9]{6})$/';
 
             if ( !preg_match( $pattern, $attr['color'] ) ){
@@ -28,19 +32,25 @@
 
             $color = $this->get_data();
 
-            return '<input type="color" name="'.$input_name.'"  id="'.$input_id.'" value="'.htmlspecialchars( $color, ENT_QUOTES, K_CHARSET ).'" style="width:100%;" '.$extra.'/>';
+            $html = '<input type="color" name="' . $input_name . '"  id="' . $input_id . '" value="' . htmlspecialchars( $color, ENT_QUOTES, K_CHARSET ) . '" style="width:' . $this->field_width . ';';
+            $html .= strlen( $this->field_height ) ? 'height:' . $this->field_height .';' : '';
+            $html .= '" ' . $extra . '/>';
+          
+            return $html;
         }
 
         function get_data( $for_ctx=0 ){
-            $data = strlen( $this->data ) ? $this->data : $this->color; 
+            $data = strlen( $this->data ) ? $this->data : $this->color;
             return $data;
         }
 
       function validate(){
             global $FUNCS;
-            require('lang/EN.php');
+            
             if( K_ADMIN_LANG != 'EN' && file_exists(K_COUCH_DIR . 'addons/color-picker/lang/' . K_ADMIN_LANG . '.php') ){
-            require('lang/'.K_ADMIN_LANG.'.php');
+                require('lang/'.K_ADMIN_LANG.'.php');
+            }else{
+                require('lang/EN.php');
             }
 
             if ( $this->validate != '0' ){
