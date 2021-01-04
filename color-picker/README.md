@@ -2,7 +2,7 @@
 
 This color picker uses the HTML5 input type="color" to select colors in the admin panel. We're all using modern browsers now, so there is no longer any need for a JS utility unless you want to get fancy. Because it uses the native HTML5 input type, the look and function of the field will vary between browsers and platforms.
 
-Simply add an editable field of type 'color' inside your template tag.
+Simply add an editable field of type 'color' to allow editors to select a color using their native tools.
 
     <cms:editable type='color' name='my_color' label='Color Picker' desc='pick a color, any color' />
 
