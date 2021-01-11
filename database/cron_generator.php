@@ -12,7 +12,7 @@
 
     $path .= K_DB_NAME . '_';
     $command = "\$command='" . K_MYSQL_PATH  . "mysqldump";
-    $command .= ' --password=' . DB_PASSWORD;
+    $command .= ' --password=' . K_DB_PASSWORD;
     $command .= ' --user=' . K_DB_USER;
     $db_host = array_map( "trim", explode(':', K_DB_HOST) );
     $command .= ' --host=' . $db_host[0];
