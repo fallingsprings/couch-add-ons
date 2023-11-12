@@ -81,7 +81,10 @@
                 }else{
                     $post_val['alpha'] = dechex( $post_val['alpha'] );
                 }
-                // create 8-digit hexadecimal color with alpha value  
+                // create 8-digit hexadecimal color with alpha value
+				if strlen($post_val['alpha']) == 1{		//single digit hex value
+					$post_val['color'] .= '0';   		//insert a 0
+				}
                 $post_val['color'] .= $post_val['alpha'];
             }
             
